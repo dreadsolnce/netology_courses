@@ -1,0 +1,10 @@
+proxy.yaml
+haproxy
+nginx
+Dockerfile
+schema.pdf
+.dockerignore
+.gitignore
+.env
+.git
+

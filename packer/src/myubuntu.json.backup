@@ -1,0 +1,32 @@
+{
+    "builders": [
+        {
+            "type": "yandex",
+            "token": "secret",
+            "folder_id": "b1gdmpusv51ippn2psip",
+            "zone": "ru-central1-a",
+            "image_name": "ubuntu-2404-docker",
+            "image_description": "my custom ubuntu with docker",
+            "source_image_family": "ubuntu-2404-lts",
+            "subnet_id": "e9brbkps9ho16v8ka5t2",
+            "use_ipv4_nat": true,
+            "disk_type": "network-hdd",
+            "ssh_username": "ubuntu"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "echo 'hello from packer'",
+                "sudo apt-get update",
+                "sudo apt-get install htop tmux net-tools -y",
+                "curl -fsSL https://get.docker.com -o get-docker.sh",
+                "sudo sh get-docker.sh",
+                "sudo usermod -a -G docker ubuntu",
+                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCWD6RrGa+vIqMs3XxaDTSaqY4szhhHjdFXuCMEY1YB/JUCMHTrSY4FVwShct+guwpjRyYqegQrHXbIdkB3Xn71HFWcsEvVNXWw/TTKpSoAwCJ6lRpIaWWipDhl1plNsZb53JeevZ7sdG5xU60S51Y8jIdTGrCwoh0M27h7qXjtPRdriVIRGj0xcKEvbsCGZy0Dt+S336oYVwuWt1nD1kBu7oQgg7VqmRbgWtsHfdfUvEuipkhY1cUwrVogLYkf+4q0ty0j7m7t8PsVd3BWJlKH/Mdxh1POa+b93VBVcFQQl/QnpBw5Eb1dpebqVh0RaAbR1egJdDmXq6tN67qYFCiJG2wGcHRvNc6+LcLJftUC2x4TEIG5neV/K3mgtnfQ5HcLZff5Ti8DdyDUAGtrjkl8ZTgb6RaIX8Wuf6NLm3HRLVnXvzZPAs8/06Ba7yYUtvwT7QTMtnVn1sx5ryoL8Uk///1WOeiIN59/y/ou/ph92j+AehFRhgfM4KKlpoqtam8= u0_a331@localhost' | tee -a /home/ubuntu/.ssh/authorized_keys"
+            ]
+        }
+    ]
+}
+

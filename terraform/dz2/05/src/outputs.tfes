@@ -1,0 +1,3 @@
+output my-output {
+ value = { val1 = yandex_compute_instance.*.name }
+}

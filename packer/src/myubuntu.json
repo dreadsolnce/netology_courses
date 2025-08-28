@@ -1,0 +1,39 @@
+{
+  "variables": {
+    "TOKEN": "secret",
+    "ZONE": "ru-central1-b",
+    "SUBNET_ID": "e2l34rf23fs4q1hq542h",
+    "aws_secret_key": ""
+  },
+  "builders": [
+        {
+            "type": "yandex",
+            "token": "{{user `TOKEN`}}",
+            "folder_id": "b1gdmpusv51ippn2psip",
+            "zone": "{{ user `ZONE` }}",
+            "image_name": "ubuntu-2404-docker",
+            "image_description": "my custom ubuntu with docker",
+            "source_image_family": "ubuntu-2404-lts",
+            "subnet_id": "{{ user `SUBNET_ID` }}",
+            "use_ipv4_nat": true,
+            "disk_type": "network-hdd",
+            "ssh_username": "ubuntu"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "echo 'hello from packer'",
+                "sudo apt-get update",
+                "sudo apt-get install htop tmux net-tools -y",
+                "curl -fsSL https://get.docker.com -o get-docker.sh",
+                "sudo sh get-docker.sh",
+                "sudo usermod -a -G docker ubuntu",
+                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCWD6RrGa+vIqMs3XxaDTSaqY4szhhHjdFXuCMEY1YB/JUCMHTrSY4FVwShct+guwpjRyYqegQrHXbIdkB3Xn71HFWcsEvVNXWw/TTKpSoAwCJ6lRpIaWWipDhl1plNsZb53JeevZ7sdG5xU60S51Y8jIdTGrCwoh0M27h7qXjtPRdriVIRGj0xcKEvbsCGZy0Dt+S336oYVwuWt1nD1kBu7oQgg7VqmRbgWtsHfdfUvEuipkhY1cUwrVogLYkf+4q0ty0j7m7t8PsVd3BWJlKH/Mdxh1POa+b93VBVcFQQl/QnpBw5Eb1dpebqVh0RaAbR1egJdDmXq6tN67qYFCiJG2wGcHRvNc6+LcLJftUC2x4TEIG5neV/K3mgtnfQ5HcLZff5Ti8DdyDUAGtrjkl8ZTgb6RaIX8Wuf6NLm3HRLVnXvzZPAs8/06Ba7yYUtvwT7QTMtnVn1sx5ryoL8Uk///1WOeiIN59/y/ou/ph92j+AehFRhgfM4KKlpoqtam8= u0_a331@localhost' | tee -a /home/ubuntu/.ssh/authorized_keys",
+                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCPYCv7EjsEWDyldyIP6uPYTdrLDIQy0NtLTnI5kigWS9ilcaPICd74O0arGCuk2D/uoj4rTZkk7fJJHGof7Q4m8u3qRRoPJkXBoOkVOqDBSj1buNLbzf4cU1SNQ5ESUDgIHiZdI6HSlKaxmiJ1PV/w+F63yLrI/z04R2SXp+DRWQ7uzXp2/9iVwMuCaH5Q733etHJwAkgDMDWHZiPzsZQ+4cf0p5scVmgnQl8NykB2ZOIGnDqQYwsSwX3TVRiRn7wWXmrMhJ3NBsjJ4zFK+plz6l2ubmvmZj0MS+YSI3Yhbu/Hqj+Fo5xbdj0e3/K9H1U2CoBVP8JYhplrXiEHqvwPkYyRSOGKod65gzQ2TH1aBan3z7gv76Y2xaS8Or7BDAVAT1Vteut3dWvxTeBW8cl8jYJsW/mw3TGtC3AT5j/aADx7MPZYP9OfzT518HnOV9Z9692rWY/55/9JcYJsG/Qo2raKTeFpXWSQ6Mvi5NdacLbgitL4huIoVfKhjuDd7V8= u0_a37@localhost' | tee -a /home/ubuntu/.ssh/authorized_keys"
+            ]
+        }
+    ]
+}
+

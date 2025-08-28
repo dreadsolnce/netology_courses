@@ -1,0 +1,5 @@
+#!/bin/bash
+wget https://hashicorp-releases.yandexcloud.net/vagrant/2.4.8/vagrant_2.4.8-1_amd64.deb
+sudo dpkg -i vagrant_2.4.8-1_amd64.deb
+rm vagrant_2.4.8-1_amd64.deb*
+vagrant -v
