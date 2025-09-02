@@ -9,6 +9,7 @@ resource "yandex_compute_instance" "web" {
   name        = join("", [var.nameVMWeb, "-${count.index+1}"])
   zone        = var.default_zone
   platform_id = "standard-v3"
+  hostname    = join("", [var.nameVMWeb, "-${count.index+1}"])
 
   resources {
     cores = var.resourcesVMWeb.cores

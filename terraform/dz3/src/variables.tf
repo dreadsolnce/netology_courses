@@ -5,7 +5,7 @@
 # }
 
 # Переменная IAM token которая хранится в переменной окружения TF_VAR_yc_token
-variable "yc_token" {}
+# variable "yc_token" {}
 
 # variable "ssh_key" {
 #   type = string

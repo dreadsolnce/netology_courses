@@ -9,6 +9,7 @@ resource "yandex_compute_instance" "db" {
   name        = var.resourcesVMDb[each.key].vm_name
   zone        = var.default_zone
   platform_id = "standard-v3"
+  hostname    = var.resourcesVMDb[each.key].vm_name
 
   resources {
     cores = var.resourcesVMDb[each.key].cpu
