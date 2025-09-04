@@ -17,14 +17,14 @@ module "create_vpc" {
     cidr         = var.default_cidr[0]
 }
 
-# # Отдельный ресурс подсети зоны b (не знаю нужен ли для домашнего задания)
-# resource "yandex_vpc_subnet" "develop_b" {
-#   name           = var.subnet_name[1]
-#   zone           = var.subnet_zone[1]
-# #   network_id     = yandex_vpc_network.develop.id
-#   network_id     = module.create_vpc.yandex_vpc_network_id
-#   v4_cidr_blocks = var.cidr_develop_b
-# }
+# Отдельный ресурс подсети зоны b (не знаю нужен ли для домашнего задания)
+resource "yandex_vpc_subnet" "develop_b" {
+  name           = var.subnet_name[1]
+  zone           = var.subnet_zone[1]
+#   network_id     = yandex_vpc_network.develop.id
+  network_id     = module.create_vpc.yandex_vpc_network_id
+  v4_cidr_blocks = var.cidr_develop_b
+}
 
 module "marketing-vm" {
   source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"

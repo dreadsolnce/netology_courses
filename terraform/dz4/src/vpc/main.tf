@@ -16,7 +16,7 @@ terraform {
 
 # Создание новой сети develop
 resource "yandex_vpc_network" "develop" {
-  name = var.env_name == null ? "unknown" : "${var.env_name}"
+  name = var.env_name == null ? "unknown" : var.env_name
 }
 
 # Создание новой подсети
