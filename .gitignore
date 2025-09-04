@@ -8,9 +8,14 @@
 *.tfstate
 *.tfstate.*
 
-# own secret vars store.
+# own secret vars store terraform.
 personal.auto.tfvars
+*.personal.auto.tfvars
+
+
 .idea
 *.env
 *vargant
+
+
 
