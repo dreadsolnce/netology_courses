@@ -60,7 +60,7 @@ variable "public_ip_address" {
 }
 
 variable "env_name" {
-    type        = list
+    type        = list(string)
     default     = [ "develop", "stage" ]
     description = "Рабочее окружение"
 }
@@ -72,9 +72,20 @@ variable "vms_ssh_root_key" {
 }
 
 variable "packages" {
-    type        = list
+    type        = list(string)
     default     = [ "vim", "nginx" ]
     description = "Устанавливаемые пакеты по умолчанию"
+}
+
+variable "instance_name" {
+  type        = list(string)
+  default     = ["webs", "web-stage"]
+  description = "Название инстансов создаваемых vm"
+}
+
+variable "my_label" {
+  default = { owner = "kolchin_vladimir", project = ["analytics", "marketing"]}
+
 }
 
 # ###example vm_web var

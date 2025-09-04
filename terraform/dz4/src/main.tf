@@ -12,9 +12,9 @@
 # Вызов локального модуля создания сети и подсети
 module "create_vpc" {
     source       = "./vpc"
-    env_name     = "develop"
-    zone         = "ru-central1-a"
-    cidr         = "10.0.1.0/24"
+    env_name     = var.vpc_name
+    zone         = var.default_zone
+    cidr         = var.default_cidr[0]
 }
 
 # # Отдельный ресурс подсети зоны b (не знаю нужен ли для домашнего задания)
@@ -34,14 +34,14 @@ module "marketing-vm" {
   subnet_zones   = var.subnet_zone
 #   subnet_ids     = [module.create_vpc.yandex_vpc_subnet_develop_a_id,yandex_vpc_subnet.develop_b.id]
   subnet_ids     = [module.create_vpc.yandex_vpc_subnet_develop_id]
-  instance_name  = "webs"
+  instance_name  = var.instance_name[0]
   instance_count = 1
   image_family   = var.name_os
   public_ip      = var.public_ip_address
 
   labels = {
-    owner   = "kolchin_vladimir",
-    project = "marketing"
+    owner   = var.my_label.owner,
+    project = var.my_label.project[0]
   }
 
   metadata = {
@@ -58,14 +58,14 @@ module "analytics-vm" {
   subnet_zones   = var.subnet_zone
 #   subnet_ids     = [yandex_vpc_subnet.develop_a.id]
   subnet_ids     = [module.create_vpc.yandex_vpc_subnet_develop_id]
-  instance_name  = "web-stage"
+  instance_name  = var.instance_name[1]
   instance_count = 1
   image_family   = var.name_os
   public_ip      = var.public_ip_address
 
   labels = {
-    owner   = "kolchin_vladimir",
-    project = "analytics"
+    owner   = var.my_label.owner,
+    project = var.my_label.project[1]
   }
 
   metadata = {
