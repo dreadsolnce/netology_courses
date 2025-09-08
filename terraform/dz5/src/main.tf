@@ -26,8 +26,10 @@ resource "yandex_vpc_subnet" "develop_b" {
   v4_cidr_blocks = var.cidr_develop_b
 }
 
+
 module "marketing-vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  # source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=1.0.0"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=7020e1fc51e53485c9fc06bffff199970cb68234"
   env_name       = var.env_name[0]
 #   network_id     = yandex_vpc_network.develop.id
   network_id     = module.create_vpc.yandex_vpc_network_id
@@ -51,7 +53,7 @@ module "marketing-vm" {
 }
 
 module "analytics-vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=7020e1fc51e53485c9fc06bffff199970cb68234"
   env_name       = var.env_name[1]
 #   network_id     = yandex_vpc_network.develop.id
   network_id     = module.create_vpc.yandex_vpc_network_id

@@ -84,6 +84,10 @@ variable "instance_name" {
 }
 
 variable "my_label" {
+  type    = object({
+    owner   = string,
+    project = list(string)
+  })
   default = { owner = "kolchin_vladimir", project = ["analytics", "marketing"]}
 
 }

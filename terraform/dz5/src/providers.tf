@@ -1,7 +1,16 @@
 terraform {
+
+  required_version = ">=1.8.4"
+
   required_providers {
     yandex = {
-      source = "yandex-cloud/yandex"
+      source  = "yandex-cloud/yandex"
+      version = "0.157.0"
+    }
+
+    template = {
+      source  = "hashicorp/template"
+      version = "2.2.0"
     }
   }
 
@@ -17,18 +26,16 @@ terraform {
 
     shared_credentials_files = ["~/.aws/credentials"]
     profile = "default"
-    region = "ru-central1"
+    region  = "ru-central1"
 
     bucket = "tfstate-kvl"
     key    = "catalog/terraform.tfstate"
 
-    skip_region_validation = true
+    skip_region_validation      = true
     skip_credentials_validation = true
-    skip_requesting_account_id = true
-    skip_s3_checksum = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
   }
-
-  required_version = ">=1.8.4"
 }
 
 provider "yandex" {
@@ -38,4 +45,5 @@ provider "yandex" {
   folder_id                = var.folder_id
   zone                     = "ru-central1-a" #(Optional)
 }
+
 
