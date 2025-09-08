@@ -13,7 +13,8 @@
 module "create_vpc" {
     source       = "./vpc"
     env_name     = var.vpc_name
-    zone         = var.default_zone
+    # zone         = var.default_zone
+    zone         = "ru-central1-d"
     cidr         = var.default_cidr[0]
 }
 

@@ -32,16 +32,20 @@ variable "vpc_name" {
   type        = string
   default     = "develop"
   description = "VPC network&subnet name"
+  validation {
+      condition = contains(["prod", "develop"], var.vpc_name)
+      error_message = "Не поддерживаемое имя сети"
+    }
 }
 
 variable "subnet_zone" {
-    type        = list
+    type        = list(string)
     default     = ["ru-central1-a", "ru-central1-b"]
     description = "Используемые зоны в проекте"
 }
 
 variable "subnet_name" {
-    type        = list
+    type        = list(string)
     default     = ["develop-ru-central1-a", "develop-ru-central1-b"]
     description = "Имена используемых подсетей"
 }
@@ -80,12 +84,35 @@ variable "packages" {
 variable "instance_name" {
   type        = list(string)
   default     = ["webs", "web-stage"]
-  description = "Название инстансов создаваемых vm"
+  description = "Название инст ансов создаваемых vm"
 }
 
 variable "my_label" {
   default = { owner = "kolchin_vladimir", project = ["analytics", "marketing"]}
+  validation {
+    condition = length(var.my_label.owner) > 0
+    error_message = "Поле owner должно содержать хотя бы один символ"
+  }
+}
 
+variable "testIP_1" {
+  type        = string
+  default     =  "192.168.0.1"
+  description = "ip адрес"
+  validation {
+    condition = can(cidrhost(join("/",tolist([var.testIP_1, "32"])), 0))
+    error_message = "Не верный ip адрес"
+  }
+}
+
+variable "testIP_2" {
+  type        = list(string)
+  default     =  ["192.168.0.1", "1.1.1.1", "1270.0.0.1"]
+  description = "список ip-адресов — проверка, что все адреса верны"
+  validation {
+    condition = alltrue([for i in var.testIP_2: can(cidrhost(join("/",tolist([i, "32"])), 0))])
+    error_message = "Список содержит не верный ip адрес"
+  }
 }
 
 # ###example vm_web var
