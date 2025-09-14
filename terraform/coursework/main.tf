@@ -69,7 +69,6 @@ data "template_file" "cloudinit" {
     ssh_public_key               = local.ssh_pub_key
     packages                     = jsonencode(var.packages)
     yandex_container_registry_id = yandex_container_registry.kvl-registry.id
-    # yandex_mdb_mysql_name        = yandex_mdb_mysql_cluster.my_cluster.host[0].fqdn
 
     # Переменные приложения
     path-app                     = var.path-app
