@@ -1,0 +1,66 @@
+#cloud-config
+users:
+  - name: ubuntu
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+package_update: true
+package_upgrade: false
+
+packages: ${packages}
+
+runcmd:
+  - curl -fsSL https://get.docker.com -o get-docker.sh
+  - sh get-docker.sh
+  - usermod -aG docker ubuntu
+
+  # Загружаем свой подготовленный образ чтоб в дальнейшем не загружать его в ручную в yandex registry
+  - docker pull kolchinvladimir/app-animals:1.0.5
+
+  - git clone https://github.com/dreadsolnce/app-animals.git ${path-app}
+  - sudo chown -R ubuntu:ubuntu ${path-app}
+  - cd ${path-app}
+  - curl --header Metadata-Flavor:Google 169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token | cut -f1 -d',' | cut -f2 -d':' | tr -d '"' | docker login --username iam --password-stdin cr.yandex
+
+  # Переименовываем и загружаем образ в yandex registry чтоб руками не пушить
+  - docker tag kolchinvladimir/app-animals:1.0.5 cr.yandex/${yandex_container_registry_id}/app-animals:1.0.5
+  - docker push cr.yandex/${yandex_container_registry_id}/app-animals:1.0.5
+  # Удаляем образа после загрузки в yandex cloud registry для чистоты эксперимента
+  - docker rmi cr.yandex/crpue89b167dfch3bcs8/app-animals:1.0.5
+  - docker rmi kolchinvladimir/app-animals:1.0.5
+
+  #  - mv .env.example .env
+  # Создание файла переменных окружения для подключения к базе данных
+  #  - echo "DB_HOST=${db-host}" > .env
+  - echo "DB_HOST=${db-host}" > .env
+  - echo "DB_USER=${db-user}" >> .env
+  - echo "DB_PASSWORD=${db-password}" >> .env
+  - echo "DB_NAME=${db-name}" >> .env
+
+  - echo "MYSQL_ROOT_PASSWORD=${mysql-root-password}" >> .env
+  - echo "MYSQL_USER=${mysql-user}" >> .env
+  - echo "MYSQL_PASSWORD=${mysql-password}" >> .env
+  - echo "MYSQL_DATABASE=${mysql-database}" >> .env
+
+  # Изменяем файл compose - добавляем image из cloud registry
+  - "sed -i 's%build:%image: cr.yandex/${yandex_container_registry_id}/app-animals:1.0.5%g' compose.yaml"
+  - sed -i '/dockerfile/d' compose.yaml
+  - sed -i '/context/d' compose.yaml
+
+  # Запуск через контейнер с базой данных
+  - docker compose up -d
+#  - cat base_example/animals.sql | docker exec -i mysql sh -c 'exec mysql -uroot -p"${mysql-root-password}" ${mysql-database}'
+
+  # Остановка контейнера для запуска базы данных через базу данных yandex
+  - docker stop mysql
+
+  - mkdir -p ~/.mysql
+  - wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" --output-document ~/.mysql/root.crt && chmod 0600 ~/.mysql/root.crt
+  - cat base_example/animals.sql | mysql --host=${db-host} --ssl-ca=~/.mysql/root.crt --ssl-mode=VERIFY_IDENTITY --port=3306 -u ${mysql-user} -p"${mysql-password}" ${mysql-database}
+
+#sed '/dockerfile/d' compose.yaml
+#sed 's%build:%image: cr.yandex/crph6m4t1ag4j0nkaljt/app-animals:1.0.5%g' compose.yaml
+# sudo apt update && sudo apt install --yes mysql-client
+#mysql --host=rc1a-276k08mfae03sbur.mdb.yandexcloud.net       --port=3306       --ssl-ca=~/.mysql/root.crt       --ssl-mode=VERIFY_IDENTITY       --user=animals       --password
