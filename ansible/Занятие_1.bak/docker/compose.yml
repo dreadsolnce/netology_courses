@@ -1,0 +1,11 @@
+services:
+  web:
+    image: kolchinvladimir/centos-python:1.0.0
+    container_name: centos7
+    hostname: centos7
+
+  db:
+    image: kolchinvladimir/centos-python:1.0.0
+    container_name: ubuntu
+    hostname: ubuntu
+
