@@ -17,5 +17,9 @@ personal.auto.tfvars
 *.env
 *vargant
 
+ansible/venv*
+
+
+
 
 
