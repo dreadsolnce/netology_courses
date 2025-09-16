@@ -5,7 +5,17 @@ services:
     hostname: centos7
 
   db:
-    image: kolchinvladimir/centos-python:1.0.0
+    image: kolchinvladimir/ubuntu-python:1.0.0
     container_name: ubuntu
     hostname: ubuntu
+ 
+  back1:
+    image: pycontribs/fedora
+    container_name: fedora1
+    hostname: fedora1
+
+  back2:
+    image: pycontribs/fedora
+    container_name: fedora2
+    hostname: fedora2
 
