@@ -8,3 +8,11 @@
       - name: Print fact
         debug:
           msg: "{{ some_fact }}"
+     
+      - name: Get facts on current container
+        community.docker.current_container_facts:
+
+      - name: Print information on current container when running in a container
+        ansible.builtin.debug:
+          msg: "Container ID is {{ ansible_module_container_id }}"
+        when: ansible_module_running_in_container
