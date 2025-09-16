@@ -13,9 +13,11 @@ services:
     image: pycontribs/fedora
     container_name: fedora1
     hostname: fedora1
+    command: [ "tail", "-f", "/var/log/dnf.log"]
 
   back2:
     image: pycontribs/fedora
     container_name: fedora2
     hostname: fedora2
+    command: [ "tail", "-f", "/var/log/dnf.log"]
 
