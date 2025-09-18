@@ -1,5 +1,6 @@
 data "yandex_compute_image" "ubuntu" {
-  family = "ubuntu-2004-lts"
+#  family = "ubuntu-2004-lts"
+  family = "fedora-35"
 }
 
 # Создание первых двух виртуальных машин

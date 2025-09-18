@@ -16,3 +16,8 @@
         ansible.builtin.debug:
           msg: "Container ID is {{ ansible_module_container_id }}"
         when: ansible_module_running_in_container
+
+      - name: Install Packages Ubuntu
+        apt: name={{ item }} update_cache=yes state=present
+        loop: [ 'nginx', 'mysql-server', 'python3-pymysql', 'php-fpm', 'php-mysql' ]
+        when: ansible_distribution == "Ubuntu" and ansible_module_running_in_container
