@@ -2,5 +2,10 @@
 clickhouse:
   hosts:
     clickhouse-01:
-      ansible_host: 51.250.66.124
+      ansible_host: 84.201.159.226
+      ansible_user: ubuntu
+vector:
+  hosts:
+    vector:
+      ansible_host: 84.201.159.226
       ansible_user: ubuntu

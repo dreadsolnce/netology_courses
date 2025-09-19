@@ -37,70 +37,49 @@
       changed_when: create_db.rc == 0
 
 - name: Install vector
-  hosts: clickhouse
-  tasks:
-    - name: Проверка наличия скачанного архива
-      stat: 
-        path: "./vector.tar.gz"
-      register: res_archiv
-      tags:
-        - create_dir
-    - name: Результат проверки
-      debug:
-        var: res_archiv
-
-    - name: Скачиваем архив с программой vector
-      get_url:
-        url: "https://packages.timber.io/vector/{{vector_version}}/vector-{{vector_version}}-x86_64-unknown-linux-musl.tar.gz"
-        dest: "./vector-{{vector_version}}.tar.gz"
-      when: res_archiv.stat.exists == false
-      tags:
-        - create_dir
+  hosts: vector
+  handlers:
+    - name: Start vector service
+      become: true
+      service:
+        name: vector
+        state: restarted
     
-    - name: Проверка наличия директории с программой
-      stat:
-        path: "./{{vector_path}}"
-      register: res_dir
+  tasks:
+#    - name: Проверка наличия скачанного архива
+#      stat: 
+#        path: "./vector.tar.gz"
+#      register: res_archiv
+#      tags:
+#        - create_dir
+#    - name: Результат проверки
+#      debug:
+#        var: res_archiv
+
+    - name: Скачиваем rpm пакет с программой vector
+      get_url:
+        url: "https://yum.vector.dev/stable/vector-0/x86_64/vector-{{vector_version}}.x86_64.rpm"
+        dest: "/tmp/vector-{{vector_version}}.rpm"
+#      when: res_archiv.stat.exists == false
       tags:
-        - create_dir
+        - download-archive
 
-    - name: Результат проверки
-      debug:
-        var: res_dir
-
-    - name: Удаляем директорию если мы скачали новый архив и если папка существует
-      file:
-        path: "./{{vector_path}}"
-        state: "absent"
-      when: 
-        - res_dir.stat.exists == true 
-        - res_archiv.stat.exists == false
+    - name: Устанавливаем пакет rpm
+      become: true
+      yum:
+        name:
+          - "/tmp/vector-{{vector_version}}.rpm"
+        disable_gpg_check: true
       tags:
-        - create_dir
+        - install-rpm
 
-    - name: Создаем директорию для программы
-      file:
-        path: "./vector"
-        state: directory
-        mode: "0755"
+    - name: Настройка конфигурации из шаблона
+      become: true
+      template:
+        src: vector.j2
+        dest: /etc/vector/vector.yaml
+      notify: Start vector service
       tags:
-        - create_dir
-      when: res_archiv.stat.exists == false
+        - create-conf
 
-    - name: Распаковываем архив
-      unarchive: 
-        src: "./vector-{{vector_version}}.tar.gz"
-        dest: "./vector"
-        remote_src: true
-      when: res_archiv.stat.exists == false
-
-#    - name: Переимновываем каталог
-#      shell: 'rsync -av --delete ./vector/vector*/* ./vector/'
-
-    - name: Переименовываем катало
-      command: mv "./vector ./vector.new"
-      when: res_archiv.stat.exists == false
-
-    - name: Настраиваем программу
-      shell: 'echo "export PATH=\"$(pwd)/vector/bin:\$PATH\"" >> $HOME/.profile'
 
