@@ -49,7 +49,7 @@
         state: restarted
   tasks:
 #    - name: Проверка наличия скачанного архива
-#      stat: 
+#      stat:
 #        path: "./vector.tar.gz"
 #      register: res_archiv
 #      tags:
@@ -59,8 +59,8 @@
 #        var: res_archiv
     - name: Скачиваем rpm пакет с программой vector
       ansible.builtin.get_url:
-        url: "https://yum.vector.dev/stable/vector-0/x86_64/vector-{{vector_version}}.x86_64.rpm"
-        dest: "/tmp/vector-{{vector_version}}.rpm"
+        url: "https://yum.vector.dev/stable/vector-0/x86_64/vector-{{ vector_version }}.x86_64.rpm"
+        dest: "/tmp/vector-{{ vector_version }}.rpm"
         mode: '0644'
 #      when: res_archiv.stat.exists == false
       tags:
@@ -68,20 +68,20 @@
 
     - name: Устанавливаем пакет rpm
       become: true
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name:
-          - "/tmp/vector-{{vector_version}}.rpm"
+          - "/tmp/vector-{{ vector_version }}.rpm"
         disable_gpg_check: true
       tags:
         - install-rpm
 
-    - name: Создаем директрию
-      file:
-        path=/var/lib/vector
-        mode=0755
-        owner=vector
-        group=vector
-        state=directory
+    - name: Создаем директорию
+      ansible.builtin.file:
+        path: /var/lib/vector
+        mode: '0755'
+        owner: vector
+        group: vector
+        state: directory
       become: true
       tags:
         - dir-vector
@@ -91,6 +91,7 @@
       ansible.builtin.template:
         src: vector.j2
         dest: /etc/vector/vector.yaml
+        mode: '0644'
       notify: Start vector service
       tags:
         - create-conf
