@@ -1,6 +1,8 @@
 ---
 - name: Install Clickhouse
   hosts: clickhouse
+#  roles:
+#    - clickhouse
   handlers:
     - name: Start clickhouse service
       become: true
@@ -41,6 +43,8 @@
 
 - name: Install vector
   hosts: vector
+#  roles:
+#    - vector-role
   handlers:
     - name: Start vector service
       become: true
@@ -88,8 +92,8 @@
 
 - name: Install lighthouse
   hosts: lighthouse
-  tags:
-    - install-lighthouse
+#  roles:
+#    - lighthouse-role
 
   handlers:
     - name: Start Nginx service
