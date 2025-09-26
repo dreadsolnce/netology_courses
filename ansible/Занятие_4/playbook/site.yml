@@ -8,6 +8,7 @@
       ansible.builtin.command: "{{ item }}"
       with_items:
         - "sed -i '2,10 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
+        - "sed -i '20 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
         - "sed -i '36 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
         - "sed -i '36 a\\    disable_gpg_check: true' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
   roles:
