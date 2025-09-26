@@ -4,3 +4,12 @@
     version: "1.13"
     name: clickhouse
 
+  - src: git@github.com:dreadsolnce/lighthouse-role.git
+    scm: git
+    version: v.1.0.0
+    name: lighthouse-role
+
+  - src: git@github.com:dreadsolnce/vector-role.git
+    scm: git
+    version: v.1.1.0
+    name: vector-role

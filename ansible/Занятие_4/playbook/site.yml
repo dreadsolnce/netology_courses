@@ -1,109 +1,18 @@
 ---
 - name: Install Clickhouse
   hosts: clickhouse
-#  roles:
-#    - clickhouse
-  handlers:
-    - name: Start clickhouse service
-      become: true
-      ansible.builtin.service:
-        name: clickhouse-server
-        state: restarted
-  tasks:
-    - name: Скачивание пакетов
-      block:
-        - name: Get clickhouse distrib
-          ansible.builtin.get_url:
-            url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.noarch.rpm"
-            dest: "./{{ item }}-{{ clickhouse_version }}.rpm"
-            mode: '0644'
-          with_items: "{{ clickhouse_packages }}"
-      rescue:
-        - name: Get clickhouse distrib
-          ansible.builtin.get_url:
-            url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
-            dest: "./clickhouse-common-static-{{ clickhouse_version }}.rpm"
-            mode: '0644'
-    - name: Install clickhouse packages
-      become: true
-      ansible.builtin.dnf:
-        name:
-          - clickhouse-common-static-{{ clickhouse_version }}.rpm
-          - clickhouse-client-{{ clickhouse_version }}.rpm
-          - clickhouse-server-{{ clickhouse_version }}.rpm
-        disable_gpg_check: true
-      notify: Start clickhouse service
-    - name: Flush handlers
-      ansible.builtin.meta: flush_handlers
-    - name: Create database
-      ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
-      register: create_db
-      failed_when: create_db.rc != 0 and create_db.rc != 82
-      changed_when: create_db.rc == 0
+  roles:
+    - clickhouse
 
 - name: Install vector
   hosts: vector
-#  roles:
-#    - vector-role
-  handlers:
-    - name: Start vector service
-      become: true
-      ansible.builtin.service:
-        name: vector
-        state: restarted
-  tasks:
-    - name: Скачиваем rpm пакет с программой vector
-      ansible.builtin.get_url:
-        url: "https://yum.vector.dev/stable/vector-0/x86_64/vector-{{ vector_version }}.x86_64.rpm"
-        dest: "/tmp/vector-{{ vector_version }}.rpm"
-        mode: '0644'
-      tags:
-        - download-archive
-
-    - name: Устанавливаем пакет rpm
-      become: true
-      ansible.builtin.dnf:
-        name:
-          - "/tmp/vector-{{ vector_version }}.rpm"
-        disable_gpg_check: true
-      tags:
-        - install-rpm
-
-    - name: Создаем директорию
-      ansible.builtin.file:
-        path: /var/lib/vector
-        mode: '0755'
-        owner: vector
-        group: vector
-        state: directory
-      become: true
-      tags:
-        - dir-vector
-
-    - name: Настройка конфигурации из шаблона
-      become: true
-      ansible.builtin.template:
-        src: vector.j2
-        dest: /etc/vector/vector.yaml
-        mode: '0644'
-      notify: Start vector service
-      tags:
-        - create-conf
+  roles:
+    - vector-role
 
 - name: Install lighthouse
   hosts: lighthouse
-#  roles:
-#    - lighthouse-role
 
-  handlers:
-    - name: Start Nginx service
-      become: true
-      ansible.builtin.service:
-        name: nginx
-        state: restarted
-        enabled: true
-
-  tasks:
+  pre_tasks:
     - name: Install nginx
       become: true
       ansible.builtin.dnf:
@@ -122,39 +31,6 @@
       ansible.builtin.dnf:
         name: git
         state: present
+  roles:
+    - lighthouse-role
 
-    - name: Клонируем репозиторий с программой
-      become: true
-      ansible.builtin.git:
-        repo: "{{ repo_lighthouse }}"
-        dest: "{{ dest_lighthouse }}"
-        single_branch: true
-        version: master
-
-    - name: Настройка конфигурации из шаблона
-      become: true
-      ansible.builtin.template:
-        src: nginx.conf.j2
-        dest: /etc/nginx/nginx.conf
-        mode: '0644'
-      notify: Start Nginx service
-
-# Дополнительные task-и могут прикодиться
-# Принудительный запуск handler-а
-#    - name: Flush handlers
-#      ansible.builtin.meta: flush_handlers
-#
-#    - name: Force notify service restart
-#      ansible.builtin.command: /bin/true
-#      changed_when: true
-#      notify: Start Nginx service
-#
-#    - name: Проверка наличия скачанного архива
-#      stat:
-#        path: "./vector.tar.gz"
-#      register: res_archiv
-#      tags:
-#        - create_dir
-#    - name: Результат проверки
-#      debug:
-#        var: res_archiv

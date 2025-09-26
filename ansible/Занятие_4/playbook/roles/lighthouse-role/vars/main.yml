@@ -1,0 +1,4 @@
+---
+# vars file for lighthouse-role
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+repo_lighthouse: "https://github.com/VKCOM/lighthouse.git"
