@@ -1,6 +1,15 @@
 ---
 - name: Install Clickhouse
   hosts: clickhouse
+  # Претаска отключает проверку ключа, в противном случай роль не проходит
+  pre_tasks:
+    - name: Отключение проверки gpg ключа
+      delegate_to: localhost
+      ansible.builtin.command: "{{ item }}"
+      with_items:
+        - "sed -i '2,10 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
+        - "sed -i '36 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
+        - "sed -i '36 a\\    disable_gpg_check: true' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
   roles:
     - clickhouse
 

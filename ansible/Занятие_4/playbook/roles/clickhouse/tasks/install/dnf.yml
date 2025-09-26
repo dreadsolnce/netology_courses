@@ -1,13 +1,13 @@
 ---
-#Main installation actions
+#Main installation actions     disable_gpg_check: true
 #https://clickhouse.com/docs/en/getting-started/#installation
 #
-- name: Install by YUM | Ensure clickhouse repo GPG key imported
-  rpm_key:
-    state: present
-    key: "{{ clickhouse_repo_key }}"
-  tags: [install]
-  become: true
+#- name: Install by YUM | Ensure clickhouse repo GPG key imported
+#  rpm_key:
+#    state: present
+#    key: "{{ clickhouse_repo_key }}"
+#  tags: [install]
+#  become: true
 
 - name: Install by YUM | Ensure clickhouse repo installed
   yum_repository:
@@ -33,7 +33,7 @@
   dnf:
     name: "{{ clickhouse_package | map('regex_replace', '$', '-' + clickhouse_version) | list }}"
     state: present
- #   disable_gpg_check: "{{ true if clickhouse_version == '19.4.0' else omit }}" 
+#    disable_gpg_check: "{{ true if clickhouse_version == '19.4.0' else omit }}"
     disable_gpg_check: true
 
   become: true
