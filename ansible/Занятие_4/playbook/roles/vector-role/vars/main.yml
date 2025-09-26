@@ -1,3 +1,0 @@
----
-# vars file for vector-role
-ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
