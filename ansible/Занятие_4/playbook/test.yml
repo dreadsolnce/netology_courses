@@ -1,0 +1,9 @@
+---
+- name: Install Clickhouse
+  hosts: clickhouse
+  pre_tasks:
+    - name: Проверка
+      delegate_to: localhost
+      command: "sed -i '2,4 s/^/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml" 
+  roles:
+    - clickhouse
