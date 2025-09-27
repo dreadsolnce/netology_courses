@@ -19,6 +19,8 @@ personal.auto.tfvars
 
 ansible/venv*
 ansible/.venv
+*.ansible
+
 
 
 
