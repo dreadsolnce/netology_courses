@@ -1,0 +1,57 @@
+---
+- name: Install Clickhouse
+  hosts: clickhouse
+  # Пре таска отключает проверку ключа, в противном случай роль не проходит. ОС Fedora 35
+  # Не стал разбираться почему (времени нет совсем), просто топорно настроил play book!
+  pre_tasks:
+    - name: Отключение проверки gpg ключа
+      delegate_to: localhost
+      ansible.builtin.command: "{{ item }}"
+      with_items:
+        - "sed -i '2,10 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
+        - "sed -i '20 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
+        - "sed -i '36 s/^#*/#/' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
+        - "sed -i '36 a\\    disable_gpg_check: true' {{ playbook_dir }}/roles/clickhouse/tasks/install/dnf.yml"
+    # Прописываем в переменную вместо latest другую нумерованную версию!
+    # playbook надо запустить два раза, т.к. при первом запуске считывается значение latest
+    - name: Замена версии устанавливаемого clickhouse
+      delegate_to: localhost
+      lineinfile:
+        path: "{{ playbook_dir }}/roles/clickhouse/defaults/main.yml"
+        regexp: "^clickhouse_version: 'latest'$"
+        line: "clickhouse_version: '22.8.7.34'"
+        state: present
+        backup: yes
+  roles:
+    - clickhouse
+
+- name: Install vector
+  hosts: vector
+  roles:
+    - vector-role
+
+- name: Install lighthouse
+  hosts: lighthouse
+
+  pre_tasks:
+    - name: Install nginx
+      become: true
+      ansible.builtin.dnf:
+        name: nginx
+        state: present
+      notify: Start Nginx service
+
+    - name: Install nodejs
+      become: true
+      ansible.builtin.dnf:
+        name: nodejs
+        state: present
+
+    - name: Устанавливаем git
+      become: true
+      ansible.builtin.dnf:
+        name: git
+        state: present
+  roles:
+    - lighthouse-role
+
