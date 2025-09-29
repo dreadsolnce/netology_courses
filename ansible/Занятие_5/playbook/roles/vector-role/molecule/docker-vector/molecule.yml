@@ -1,0 +1,17 @@
+---
+driver:
+  name: docker
+platforms:
+  - name: instance-fedora35
+    image: docker.io/fedora:35
+    pre_build_image: true
+  - name: instance-molecule-fedora35
+    image: docker.io/pulp/molecule_fedora35:latest
+    pre_build_image: true
+  - name: instance-ubuntu
+    image: docker.io/ubuntu:latest
+verifier:
+  name: ansible
+
+
+

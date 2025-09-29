@@ -1,0 +1,47 @@
+---
+# tasks file for vector-role
+- name: Скачиваем rpm пакет с программой vector
+  ansible.builtin.get_url:
+    url: "https://yum.vector.dev/stable/vector-0/x86_64/vector-{{ vector_version }}.x86_64.rpm"
+    dest: "/tmp/vector-{{ vector_version }}.rpm"
+    mode: '0644'
+  tags:
+    - download-archive
+
+- name: Устанавливаем пакет top
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - "htop"
+    state: present
+    disable_gpg_check: true
+
+- name: Устанавливаем пакет rpm
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - "/tmp/vector-{{ vector_version }}.rpm"
+    disable_gpg_check: true
+  tags:
+    - install-rpm
+
+- name: Создаем директорию
+  ansible.builtin.file:
+    path: /var/lib/vector
+    mode: '0755'
+    owner: vector
+    group: vector
+    state: directory
+  become: true
+  tags:
+    - dir-vector
+
+- name: Настройка конфигурации из шаблона
+  become: true
+  ansible.builtin.template:
+    src: vector.j2
+    dest: /etc/vector/vector.yaml
+    mode: '0644'
+#  notify: Start vector service
+  tags:
+    - create-conf

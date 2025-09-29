@@ -1,0 +1,15 @@
+---
+driver:
+  name: podman
+platforms:
+  - name: instance-molecule-fedora35
+    image: docker.io/pulp/molecule_fedora35:latest
+    pre_build_image: true
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - destroy
+    - create
+    - converge
+    - destroy

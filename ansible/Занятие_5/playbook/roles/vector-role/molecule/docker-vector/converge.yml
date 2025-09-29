@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Тестовое сообщение
+      ansible.builtin.debug:
+        msg: "Запуск тестирования"
+    - name: Запуск моей роли
+      ansible.builtin.include_role:
+        name: vector-role

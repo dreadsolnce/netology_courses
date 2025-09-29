@@ -2,15 +2,15 @@
 group_clickhouse:
   hosts:
     clickhouse:
-      ansible_host: 51.250.7.62
+      ansible_host: 158.160.114.86
       ansible_user: fedora
 group_vector:
   hosts:
     vector:
-      ansible_host: 51.250.90.137
+      ansible_host: 158.160.98.128
       ansible_user: fedora
 group_lighthouse:
   hosts:
     lighthouse:
-      ansible_host: 51.250.86.6
+      ansible_host: 158.160.107.202
       ansible_user: fedora
