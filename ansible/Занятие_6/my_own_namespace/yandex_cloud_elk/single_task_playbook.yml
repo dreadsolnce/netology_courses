@@ -1,0 +1,8 @@
+---
+- name: Тестовый модуль создания файла!
+  hosts: localhost
+  tasks:
+    - name: Создаем файл test.tmp в директории tmp
+      my_own_module:
+        path: "/tmp/test1.tmp"
+        content: "Проверка работы playbook-а my_own_module\n"

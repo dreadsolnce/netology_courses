@@ -1,0 +1,4 @@
+- name: Тестовый модуль создания файла!
+  hosts: localhost
+  roles:
+    - my_one_namespace_role

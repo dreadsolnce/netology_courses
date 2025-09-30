@@ -6,3 +6,7 @@
     - name: Replace this task with one that validates your content
       ansible.builtin.debug:
         msg: "This is the effective test"
+
+    - name: Запуск моей роли
+      ansible.builtin.include_role:
+        name: vector-role
