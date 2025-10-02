@@ -1,0 +1,15 @@
+---
+- name: control-node
+  hosts: group_control
+  tasks:
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "{{ ansible_distribution }}"
+
+- name: managed-node
+  hosts: group_managed
+  tasks:
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "{{ ansible_distribution }}"
+

@@ -54,7 +54,6 @@ variable "security_group_egress" {
   ]
 }
 
-
 resource "yandex_vpc_security_group" "security_group_production" {
   name       = "security_group_production"
   network_id = yandex_vpc_network.vpc.id

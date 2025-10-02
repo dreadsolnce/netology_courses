@@ -1,0 +1,12 @@
+---
+%{~ for i in hosts ~}
+%{ if i.name == "control-node" }
+group_control:
+  hosts:%{ endif }%{ if i.name == "managed-node1" }
+group_managed:
+  hosts:%{ endif }
+    ${i.name}:
+      ansible_host: ${i.network_interface[0].nat_ip_address}
+      ansible_user: ubuntu
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+%{~ endfor ~}
