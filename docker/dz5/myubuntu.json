@@ -1,6 +1,6 @@
 {
   "variables": {
-    "TOKEN": "t1.9euelZqMx5jLzpbMyJSNlcuUx57Jyu3rnpWajIqSiceLnovMj5KRiciXzprl8_c2UQU5-e8NLTlh_N3z93Z_Ajn57w0tOWH8zef1656VmouNjZKOkI-Wk43Ly47Hi4-T7_zF656VmouNjZKOkI-Wk43Ly47Hi4-T.7XjSdtsiGUloNjsIP0WfUl2DqewK0Bu_NI6X0-dtqwUyKdUiGEvc-QszCyVQ0HqZ2PWscgs6sEN2SWlJ0_x1BA",
+    "TOKEN": "",
     "ZONE": "ru-central1-a",
     "FOLDER_ID": "b1gh1tm69ej6s5k9qube",
     "aws_secret_key": ""
