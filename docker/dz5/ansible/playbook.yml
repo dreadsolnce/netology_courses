@@ -1,56 +1,53 @@
 ---
 - name: control-node
   hosts: group_control
-  vars:
-    mygroupvars: "{{ inventory_dir }}/group_vars/all/credentionals.yml"
+  gather_facts: true
   tasks:
-    - name: Debug
-      ansible.builtin.debug:
-        msg: "{{ ansible_distribution }}"
-    - name: init cluster
+    - name: Инициализируем кластер
       community.docker.docker_swarm:
         state: present
-    - name: Gets token
-      ansible.builtin.shell: docker swarm join-token manager -q
+        advertise_addr: "{{ ansible_default_ipv4.address }}"
+
+    - name: Получаем токен для подключения worker nodes
+      ansible.builtin.shell: docker swarm join-token -q worker
       register: manager_token
-    - name: Debug
-      debug:
-        msg: "Токен для подключения: {{ manager_token.stdout }}"
-    - name: Get ip
-      debug: 
-        msg: "{{ ansible_default_ipv4.address }}"
-      register: ip_control_node
-    - name: Debug ip control node
-      debug:
-#        msg: "ip адрес control-node: {{ ansible_default_ipv4.address }}"
-        msg: "ip адрес control-node: {{ ip_control_node.msg }}"
-    - name: Get var serverip
+
+    - name: Создаем файл из шаблона
+      ansible.builtin.template:
+        src: "{{ inventory_dir }}/template/package.j2"
+        dest: "{{ inventory_dir }}/package.json"
+      vars:
+        ipserver: "{{ ansible_default_ipv4.address }}"
+        token: "{{ manager_token.stdout }}"
       delegate_to: localhost
-      lineinfile:
-        path: "{{ mygroupvars }}"
-        regexp: "^serverip:"
-        line: "serverip: {{ ansible_default_ipv4.address }}"
-        state: present
-    - name: Get var token
-      delegate_to: localhost
-      lineinfile: 
-        path: "{{ mygroupvars }}"
-        regexp: "^token:"
-        line: "token: {{ manager_token.stdout }}"
-        state: present
 
 - name: managed-node
   hosts: group_managed
+  gather_facts: true
   tasks:
-    - name: Debug
-      ansible.builtin.debug:
-        msg: "{{ ansible_distribution }}"
-    - name: Debug 1
+    - name: Загружаем переменные из файла
+      ansible.builtin.include_vars:
+        file: "{{ inventory_dir }}/package.json"
+        name: control_node_vars
+
+    - name: debug
       debug:
-        msg: "{{ token }}"
+        var: control_node_vars['ipserver']
+
     - name: Инициализируем ноду в кластере
-      community.docker.docker_swarm:
-        state: join
-#        advertise_addr: "{{ ansible_default_ipv4.address }}"
-        join_token: "{{ token }}"
-        remote_addrs: ['{{ serverip }}:2377']
+      ansible.builtin.shell:
+        cmd: docker swarm join --token "{{ control_node_vars['token'] }}" "{{ control_node_vars['ipserver'] }}":2377
+
+- name: view cluster
+  hosts: group_control
+  tasks:
+    - name: Проверка состояния кластера
+      ansible.builtin.shell:
+        cmd: docker node ls
+      register: state_cluster
+
+#    - name: Состояние кластера
+#      debug:
+#        msg: "Состояние кластера: {{ state_cluster }}"
+
+

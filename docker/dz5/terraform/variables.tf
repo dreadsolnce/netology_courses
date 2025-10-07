@@ -67,6 +67,30 @@ variable "sec_group_mynet_in" {
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 443
     },
+    {
+      protocol       = "TCP"
+      description    = "разрешить входящий https"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 2377
+    },
+    {
+      protocol       = "TCP"
+      description    = "разрешить входящий https"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 7946
+    },
+    {
+      protocol       = "UDP"
+      description    = "разрешить входящий https"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 7946
+    },
+    {
+      protocol       = "UDP"
+      description    = "разрешить входящий https"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 4789
+    },
   ]
 }
 
@@ -98,7 +122,7 @@ variable "sec_group_mynet_out" {
 # id образа операционной системы на которой будет разворачиваться виртуальная машина
 variable "imageID" {
   type        = string
-  default     = "fd81vnu2874qk64kqt0v"
+  default     = "fd8d464f5srt40f0mftt"
   description = "id образа виртуальной машины"
 }
 
