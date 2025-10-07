@@ -91,6 +91,12 @@ variable "sec_group_mynet_in" {
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 4789
     },
+    {
+      protocol       = "TCP"
+      description    = "разрешить входящий https"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 8090
+    },
   ]
 }
 

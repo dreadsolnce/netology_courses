@@ -38,13 +38,23 @@
       ansible.builtin.shell:
         cmd: docker swarm join --token "{{ control_node_vars['token'] }}" "{{ control_node_vars['ipserver'] }}":2377
 
-- name: view cluster
+- name: Copy app
   hosts: group_control
   tasks:
-    - name: Проверка состояния кластера
-      ansible.builtin.shell:
-        cmd: docker node ls
-      register: state_cluster
+    - name: Копируем приложение на control-node
+      ansible.builtin.copy:
+        src: ../app    # Укажите путь к вашей локальной папке
+        dest: "{{ ansible_env.HOME }}"                       # Укажите путь на удаленном сервере
+        owner: ubuntu                     # Опционально: Владелец папки на удаленном сервере
+        group: ubuntu                     # Опционально: Группа папки на удаленном сервере
+        mode: '0755'                      # Опционально: Права доступа (например, 755)
+      tags:
+        - tag1
+
+#- name: Сбилдить docker образ
+#  docker build -f ./Dockerfile.python -t app:1.0.0 .
+
+
 
 #    - name: Состояние кластера
 #      debug:
