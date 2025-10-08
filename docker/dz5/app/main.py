@@ -5,7 +5,10 @@ from contextlib import contextmanager, asynccontextmanager
 import mysql.connector
 from fastapi import FastAPI, Request, Depends, Header
 from typing import Optional
+import time
 
+# Пауза для запуска через docker swarm
+time.sleep(60)
 
 # --- 1. Конфигурация ---
 # Считываем конфигурацию БД из переменных окружения

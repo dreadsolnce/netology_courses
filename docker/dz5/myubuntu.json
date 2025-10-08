@@ -2,7 +2,7 @@
   "variables": {
     "TOKEN": "",
     "ZONE": "ru-central1-a",
-    "FOLDER_ID": "b1gh1tm69ej6s5k9qube",
+    "FOLDER_ID": "",
     "aws_secret_key": ""
   },
   "builders": [

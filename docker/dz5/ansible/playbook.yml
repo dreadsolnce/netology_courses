@@ -50,12 +50,18 @@
         mode: '0755'                      # Опционально: Права доступа (например, 755)
       tags:
         - tag1
+    - name: Деплой приложения
+      ansible.builtin.shell: |
+        cd app
+        docker stack deploy -c compose.yaml my
+      register: result_deploy
+
+    - name: Статус деплоя
+      ansible.builtin.debug:
+        var: result_deploy['stdout_lines']
 
 #- name: Сбилдить docker образ
 #  docker build -f ./Dockerfile.python -t app:1.0.0 .
-
-
-
 #    - name: Состояние кластера
 #      debug:
 #        msg: "Состояние кластера: {{ state_cluster }}"
