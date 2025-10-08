@@ -69,33 +69,38 @@ variable "sec_group_mynet_in" {
     },
     {
       protocol       = "TCP"
-      description    = "разрешить входящий https"
+      description    = "разрешить входящий трафик для docker swarm"
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 2377
     },
     {
       protocol       = "TCP"
-      description    = "разрешить входящий https"
+      description    = "разрешить входящий трафик для docker swarm"
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 7946
     },
     {
       protocol       = "UDP"
-      description    = "разрешить входящий https"
+      description    = "разрешить входящий трафик для docker swarm"
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 7946
     },
     {
       protocol       = "UDP"
-      description    = "разрешить входящий https"
+      description    = "разрешить входящий трафик для docker swarm"
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 4789
     },
     {
       protocol       = "TCP"
-      description    = "разрешить входящий https"
+      description    = "разрешить входящий для nginx"
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 8090
+    },
+    {
+      protocol       = "ICMP"
+      description    = "разрешить пинг"
+      v4_cidr_blocks = ["0.0.0.0/0"]
     },
   ]
 }
@@ -119,6 +124,25 @@ variable "sec_group_mynet_out" {
       v4_cidr_blocks = ["0.0.0.0/0"]
       from_port      = 0
       to_port        = 65365
+    },
+    {
+      protocol       = "ICMP"
+      description    = "разрешить пинг"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+    },
+    {
+      protocol       = "UDP"
+      description    = "разрешить исходящий трафик для docker swarm"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      from_port      = 7946
+      to_port        = 7946
+    },
+    {
+      protocol       = "UDP"
+      description    = "разрешить исходящий трафик для docker swarm"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      from_port      = 4789
+      to_port        = 4789
     }
   ]
 }
@@ -146,6 +170,11 @@ variable "nameVM" {
   description = "Основная часть имени виртуальной машины"
 }
 
+variable "countVM" {
+  default = 3
+  description = "Количество создаваемых машин"
+}
+
 variable "resourcesVM" {
   type = object(
     {
@@ -156,10 +185,10 @@ variable "resourcesVM" {
   )
   default = {
     cores         = 2
-    memory        = 1
-    core_fraction = 20
+    memory        = 2
+    core_fraction = 100
   }
-  description = "Ресурсы для создания первых двух машин"
+  description = "Ресурсы для создания машин"
 }
 
 

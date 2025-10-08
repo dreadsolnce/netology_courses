@@ -72,7 +72,7 @@ data "yandex_compute_image" "nameOS" {
 }
 
 resource "yandex_compute_instance" "vm" {
-  count       = 4
+  count       = var.countVM
   name = count.index == 0 ? "control-${var.nameVM}" : join("", ["managed-",var.nameVM, count.index])
   hostname = count.index == 0 ? "control-${var.nameVM}" : join("", ["managed-",var.nameVM, count.index])
   zone        = var.zone[0]
