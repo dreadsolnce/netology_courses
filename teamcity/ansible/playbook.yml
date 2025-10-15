@@ -1,0 +1,36 @@
+---
+- name: server
+  hosts: group_server
+  gather_facts: true
+  tasks:
+    - name: Запускаем docker
+      ansible.builtin.shell: docker run -d --rm --name teamcity-server-instance -v .:/data/teamcity_server/datadir -v .:/opt/teamcity/logs -p 8111:8111 jetbrains/teamcity-server
+
+    - name: Создаем файл из шаблона
+      ansible.builtin.template:
+        src: "{{ inventory_dir }}/template/package.j2"
+        dest: "{{ inventory_dir }}/package.json"
+      vars:
+        ipserver: "{{ ansible_default_ipv4.address }}"
+      delegate_to: localhost
+
+- name: agent
+  hosts: group_agent
+  gather_facts: true
+  tasks:
+    - name: Загружаем переменные из файла
+      ansible.builtin.include_vars:
+        file: "{{ inventory_dir }}/package.json"
+        name: ip_serv
+
+    - name: Запускаем docker
+      ansible.builtin.shell:
+        cmd: docker run -d --rm -e SERVER_URL="http://"{{ ip_serv['ipserver'] }}":8111" --name teamcity-agent-instance -v .:/data/teamcity_agent/conf jetbrains/teamcity-agent
+
+- name: nexus
+  hosts: group_nexus
+  gather_facts: true
+  tasks:
+    - name: Запускаем docker
+      ansible.builtin.shell:
+        cmd: docker run -d -p 8081:8081 --name nexus sonatype/nexus3

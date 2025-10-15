@@ -1,0 +1,14 @@
+---
+%{~ for i in hosts ~}
+%{ if i.name == "teamcity-server" }
+group_server:
+  hosts:%{ endif }%{ if i.name == "teamcity-agent" }
+group_agent:
+  hosts:%{ endif }%{ if i.name == "nexus" }
+group_nexus:
+  hosts:%{ endif }
+    ${i.name}:
+      ansible_host: ${i.network_interface[0].nat_ip_address}
+      ansible_user: ubuntu
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+%{~ endfor ~}
