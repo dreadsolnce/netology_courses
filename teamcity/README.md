@@ -5,3 +5,10 @@
 ## Описание проекта
 
 С помощью terraform в yandex cloud создаются три виртуальные машины: 
+
+    - teamcity-server
+    - teamcity-agent
+    - nexus
+
+Автоматом с помощью ansible playbook на созданных виртуальных машинах разворачиваются соответствующие docker контейнеры
+
