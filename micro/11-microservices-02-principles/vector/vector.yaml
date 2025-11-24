@@ -1,0 +1,82 @@
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
+#
+#                                    V E C T O R
+#                                   Configuration
+#
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://vector.dev/docs
+# Chat: https://chat.vector.dev
+# ------------------------------------------------------------------------------
+
+#type sources:
+#  docker_logs, file, fluent, http, journald, kafka, kubernetes_logs, stdin, statsd, syslog, prometheus_scrape
+#  http: //vector.dev/docs/reference/configuration/sources
+
+#type sinks
+# console, clickhouse, elasticsearch, file, kafka, loki, redis, socket
+#  http: //vector.dev/docs/reference/configuration/sinks
+
+
+# Моя метрика
+#---------------------------------------------------
+sources:
+  in:                   # Название
+    type: "demo_logs"   # Принимать все что будет попадать в стандартный ввод к вектору
+    format: "syslog"
+    interval: 120
+
+transforms:
+  parse_logs:
+    type: "remap"
+    inputs: ["in"]
+    source: |
+      . = parse_syslog!(string!(.message))
+
+sinks:
+  out:                              # Название
+    inputs: ["parse_logs"]          # Откуда принимать. Предыдущий шаг
+    type: "console"                 # Куда выводить в консоль
+    encoding:
+      codec: "json"                 # Текст
+      json:
+        pretty: true
+  
+  elastic:
+    type: "elasticsearch"
+    inputs: ["parse_logs"]
+    endpoint: "http://elasticsearch:9200"
+    bulk:
+      index: "vector-%Y-%m-%d"
+
+
+# Файл по умолчанию создаваемый программой vector
+#--------------------------------------------------
+#sources:
+#  dummy_logs:
+#    type: "demo_logs"
+#    format: "syslog"
+#    interval: 1
+
+# Parse Syslog logs
+# See the Vector Remap Language reference for more info: https://vrl.dev
+#transforms:
+#  parse_logs:
+#    type: "remap"
+#    inputs: ["dummy_logs"]
+#    source: |
+#      . = parse_syslog!(string!(.message))
+
+# Print parsed logs to stdout
+#sinks:
+#  print:
+#    type: "console"
+#    inputs: ["parse_logs"]
+#    encoding:
+#      codec: "json"
+#      json:
+#        pretty: true
+

@@ -1,0 +1,30 @@
+sources:
+  my_docker_logs_source:
+    type: "docker_logs" # Тип источника для сбора логов Docker
+    auto_partial_merge: false
+    include_containers: ["security","uploader","storage","gateway"]
+    exclude_containers: ["elasticsearch","kibana","vector"]
+
+transforms:
+  dedot_docker_labels:
+    type: remap
+    inputs:
+      - my_docker_logs_source
+    source:  >-
+       . = map_keys(., recursive: true) -> |key| { replace(key, ".", "_") }        
+      #      if exists(.log.label) && (is_object(.log.label) || is_array(.log.label)) {
+      #            .log.label = map_keys(.log.label, recursive: true) -> |key| { replace(key, ".", "_") }
+      #          }
+
+sinks:
+  elastic:
+    type: "elasticsearch"
+    #inputs: ["my_docker_logs_source"]
+    inputs: ["dedot_docker_labels"]
+    endpoint: "http://elasticsearch:9200"
+    bulk:
+      index: "docker-%Y-%m-%d"
+    api_version: "v8" 
+    batch:
+      timeout_secs: 2
+
