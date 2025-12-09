@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multitool
+spec:
+  containers:
+  - name: multitool-container
+    image: wbitt/network-multitool
+
