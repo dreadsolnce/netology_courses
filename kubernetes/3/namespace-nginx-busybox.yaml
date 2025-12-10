@@ -1,0 +1,7 @@
+# namespace-dev.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  namespace-nginx-busybox     # Имя вашего нового пространства имен
+  labels:
+    app: deploy-web

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web 
+  labels:
+    app: deploy-web
+#  namespace: namespace-nginx-busybox 
+spec:
+  replicas: 1 # Колличество подов 
+  selector:
+    matchLabels:
+      app: deploy-web
+  template:
+    metadata:
+      labels:
+        app: deploy-web
+    spec:
+      initContainers:
+      - name: busybox-container
+        image: busybox:latest
+#        command: ["/bin/sh", "-c", "while ! [ $? -ne 0 ]; do nc -z -w 1 service-web-nginx-busybox;  echo waiting for nginx-service; sleep 2; done; echo успех" ] # The command to run
+        command: ['sh', '-c', "until nslookup service-web-nginx-busybox.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for service; sleep 2; done"]  
+      containers:
+      - name: nginx-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+          name: port-nginx
+       
