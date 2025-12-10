@@ -8,6 +8,9 @@ spec:
   ports:
   - name: web-pot-80
     protocol: TCP
+    port: 80
+    targetPort: port-nginx
+  - name: web-port-8080
+    protocol: TCP
     port: 8080
     targetPort: port-multi
- 
