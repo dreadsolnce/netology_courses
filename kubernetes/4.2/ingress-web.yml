@@ -24,10 +24,10 @@ spec:
   - host: "app2.test.com"
     http:
       paths:
-      - path: /test
+      - path: /
         pathType: Exact
         backend:
           service:
-            name: service-web-front
+            name: service-web-back
             port:
               number: 80
