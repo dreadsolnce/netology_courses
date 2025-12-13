@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: multitool-container
-        image: praqma/network-multitool:alpine-extra
+        #image: praqma/network-multitool:alpine-extra
+        image: wbitt/network-multitool:latest
         ports:
         - containerPort: 80
           name: port-multi
