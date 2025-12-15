@@ -17,19 +17,17 @@ spec:
       containers:
       - name: container-busybox
         image: busybox:latest
-        command: ["/bin/sh", "-c", "while ! [ $? -ne 0 ]; do echo $(date) >> /busybox-data/date.txt;  sleep 5; done;" ] # The command to run
+        command: ["/bin/sh", "-c", "while ! [ $? -ne 0 ]; do echo $(date) >> /busybox-data/date.txt && sleep 5; done;" ] # The command to run
         volumeMounts:
-        - name: data
+        - name: data-app
           mountPath: /busybox-data
       - name: container-multitool
         image: wbitt/network-multitool:latest
         volumeMounts:
-        - name: data
+        - name: data-app
           mountPath: /multitool-data
       volumes:
-      - name: data
-        emptyDir: {}
-#        hostPath:
-#          path: /tmp/data
-
+        - name: data-app
+          persistentVolumeClaim:
+            claimName: pvc-data 
 

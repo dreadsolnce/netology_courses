@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  deploy-app
+  name:  deploy-app-sc
   labels:
     app: app
 spec:
@@ -17,19 +17,17 @@ spec:
       containers:
       - name: container-busybox
         image: busybox:latest
-        command: ["/bin/sh", "-c", "while ! [ $? -ne 0 ]; do echo $(date) >> /busybox-data/date.txt;  sleep 5; done;" ] # The command to run
+        command: ["/bin/sh", "-c", "while ! [ $? -ne 0 ]; do echo $(date) >> /busybox-data/date.txt && sleep 5; done;" ] # The command to run
         volumeMounts:
-        - name: data
+        - name: data-app-sc
           mountPath: /busybox-data
       - name: container-multitool
         image: wbitt/network-multitool:latest
         volumeMounts:
-        - name: data
+        - name: data-app-sc
           mountPath: /multitool-data
       volumes:
-      - name: data
-        emptyDir: {}
-#        hostPath:
-#          path: /tmp/data
-
+        - name: data-app-sc
+          persistentVolumeClaim:
+            claimName: pvc-data-sc 
 
