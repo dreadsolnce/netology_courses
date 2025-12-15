@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-multitool
+  labels:
+    app: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      hostPID: true
+      containers:
+      - name: daemonset-multitool 
+        image:  wbitt/network-multitool:latest 
+        volumeMounts:
+        - name: mickrok8s-syslog
+          mountPath: /mickrok8s.log
+          readOnly: true
+      volumes:
+      - name: mickrok8s-syslog 
+        hostPath:
+          path: /var/log/syslog   
+          type: File               # Указываем, что это файл
+

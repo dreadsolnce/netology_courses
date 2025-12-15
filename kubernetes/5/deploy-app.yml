@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  deploy-app
+  labels:
+    app: app
+spec:
+  replicas: 2 # Колличество подов 
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: container-busybox
+        image: busybox:latest
+        command: ["/bin/sh", "-c", "while ! [ $? -ne 0 ]; do echo $(date) >> /busybox-data/date.txt;  sleep 5; done;" ] # The command to run
+        volumeMounts:
+        - name: data
+          mountPath: /busybox-data
+      - name: container-multitool
+        image: wbitt/network-multitool:latest
+        volumeMounts:
+        - name: data
+          mountPath: /multitool-data
+      volumes:
+      - name: data
+        emptyDir: {}
+
