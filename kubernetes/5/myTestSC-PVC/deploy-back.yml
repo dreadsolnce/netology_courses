@@ -26,9 +26,10 @@ spec:
           value: "80"
         volumeMounts:
         - name: volume-back
-          mountPath: /usr/share/nginx/html/index.html
+          mountPath: /usr/share/nginx/html/
       volumes:
       - name: volume-back
-        hostPath:
-          path: /home/ubuntu/data-html/index-back.html
+        persistentVolumeClaim:
+          claimName: pvc-vol-back
+
       # scp -r data-html ubuntu@158.160.71.158:/home//ubuntu/

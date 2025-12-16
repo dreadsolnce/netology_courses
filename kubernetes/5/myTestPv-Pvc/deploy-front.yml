@@ -5,7 +5,7 @@ metadata:
   labels:
     app: deploy-web
 spec:
-  replicas: 3 # Колличество подов 
+  replicas: 6 # Колличество подов 
   selector:
     matchLabels:
       app: deploy-web
@@ -25,8 +25,7 @@ spec:
           mountPath: /usr/share/nginx/html/
       volumes:
       - name: volume-front
-        hostPath:
-          path: /home/ubuntu/html/front
-
+        persistentVolumeClaim:
+          claimName: pvc-vol-front
 # scp -r html ubuntu@158.160.71.158:/home/ubuntu/
       

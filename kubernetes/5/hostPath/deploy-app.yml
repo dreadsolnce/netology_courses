@@ -28,8 +28,8 @@ spec:
           mountPath: /multitool-data
       volumes:
       - name: data
-        emptyDir: {}
-#        hostPath:
-#          path: /tmp/data
+#        emptyDir: {}
+        hostPath:
+          path: /tmp/data
 
 
