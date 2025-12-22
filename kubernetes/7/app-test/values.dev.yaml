@@ -1,0 +1,4 @@
+labels:
+  app: deploy-dev-web
+  service: deploy-dev-web
+

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: {{ .Values.labels.app }}
+spec:
+  replicas: {{ .Values.replicas }} # Колличество подов
+  selector:
+    matchLabels:
+      app: {{ .Values.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.labels.app }}
+    spec:
+      containers:
+      - name: nginx-container
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 80
+          name: port-nginx
+        volumeMounts:
+          - mountPath: {{ .Values.volumeMounts.nginx }}
+            name: configmap-nginx-html
+
+      - name: multitool-container
+        image: praqma/network-multitool:alpine-extra
+        ports:
+        - containerPort: 8080
+          name: port-multi
+        volumeMounts:
+          - mountPath: {{ .Values.volumeMounts.nginx }}
+            name: configmap-multitool-html
+        env:
+        - name: HTTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-multitool-env
+              key: HTTP_PORT
+      volumes:
+      - name: configmap-multitool-html
+        configMap:
+          name: configmap-multitool-html
+      - name: configmap-nginx-html
+        configMap:
+          name: configmap-nginx-html
+

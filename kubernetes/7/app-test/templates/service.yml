@@ -1,10 +1,12 @@
+{{- if .Values.service.enabled}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-web
+  name: {{ .Values.service.name }}
+{{/*  name: service-web*/}}
 spec:
   selector:
-    app: deploy-web
+    app: {{ .Values.labels.app }}
   ports:
   - name: web-pot-80
     protocol: TCP
@@ -14,3 +16,4 @@ spec:
     protocol: TCP
     port: 8080
     targetPort: port-multi
+{{- end }}

@@ -1,0 +1,17 @@
+image:
+  name: nginx
+  tag: latest
+
+replicas: 4
+
+volumeMounts:
+  nginx: /usr/share/nginx/html/
+
+service:
+  enabled: true
+  name: deploy-web
+
+labels:
+  app: deploy-test-web
+  service: deploy-test-web
+

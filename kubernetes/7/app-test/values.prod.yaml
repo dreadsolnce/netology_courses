@@ -1,0 +1,5 @@
+labels:
+  app: deploy-prod-web
+  service: deploy-prod-web
+
+
