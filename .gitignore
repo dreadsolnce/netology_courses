@@ -21,6 +21,9 @@ ansible/venv*
 ansible/.venv*
 *.ansible
 
+netology_courses/kubernetes/*/*.key
+netology_courses/kubernetes/*/*.crt
+netology_courses/kubernetes/*.csr
 
 
 
