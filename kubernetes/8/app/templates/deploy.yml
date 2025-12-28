@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: {{ .Values.labels.app }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas }} # Количество подов
+  selector:
+    matchLabels:
+      app: {{ .Values.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.labels.app }}
+    spec:
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+      - name: nginx-container
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 80
+          name: port-nginx
+        env:
+          - name: POD_IP # Имя переменной окружения, которую мы будем использовать
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        command: [ "/bin/sh", "-c" ]
+        args:
+          - |
+            # Записываем IP в стандартную страницу Nginx
+            echo "<h1>Pod IP: $POD_IP</h1>" > /usr/share/nginx/html/index.html
+            # Запускаем основной процесс Nginx
+            nginx -g 'daemon off;'

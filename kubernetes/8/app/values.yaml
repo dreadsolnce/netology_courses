@@ -1,0 +1,14 @@
+labels:
+  app: deploy-app
+
+namespace: app
+
+replicas: 4
+
+image:
+  name: nginx
+  tag: latest
+
+service:
+  enabled: true
+  name: service-app
