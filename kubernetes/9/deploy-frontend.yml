@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: label-front 
+  namespace: app                     
+spec:
+  replicas: 2 # Колличество подов 
+  selector:
+    matchLabels:
+      app: label-front
+  template:
+    metadata:
+      labels:
+        app: label-front
+    spec:
+      containers:
+        - name: multitool
+          image: praqma/network-multitool:alpine-extra
+          ports:
+            - containerPort: 80
+              name: port
+
+

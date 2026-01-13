@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-cache
+  namespace: app
+spec:
+  selector:
+    app: label-cache
+  ports:
+  - name: web-port-80
+    protocol: TCP
+    port: 80
+    targetPort: port

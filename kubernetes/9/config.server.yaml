@@ -1,0 +1,12 @@
+
+write-kubeconfig-mode: "0644"
+node-ip:
+  - 10.129.0.11
+node-external-ip:
+  - 158.160.21.30
+advertise-address:
+  - 10.129.0.11
+cni:
+  - calico
+disable:
+  - rke2-canal

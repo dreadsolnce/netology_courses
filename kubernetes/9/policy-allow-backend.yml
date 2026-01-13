@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: 
+  name: policy-back
+  namespace: app
+spec:
+  podSelector: 
+    matchLabels:
+      app: label-back
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app: label-front
+
+

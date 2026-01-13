@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache
+  labels:
+    app: label-cache 
+  namespace: app                     
+spec:
+  replicas: 2 # Колличество подов 
+  selector:
+    matchLabels:
+      app: label-cache
+  template:
+    metadata:
+      labels:
+        app: label-cache
+    spec:
+      containers:
+        - name: multitool
+          image: praqma/network-multitool:alpine-extra
+          ports:
+            - containerPort: 80
+              name: port
+
+

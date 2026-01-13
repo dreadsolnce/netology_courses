@@ -1,0 +1,7 @@
+# namespace-dev.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  app     # Имя вашего нового пространства имен
+  labels:
+    app: deploy

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-test 
+  labels: 
+    app: label-test
+  namespace: app
+spec:
+  containers:
+  - name: curl
+    image: praqma/network-multitool:alpine-extra
