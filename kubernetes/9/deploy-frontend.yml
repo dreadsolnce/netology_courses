@@ -2,18 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  labels:
-    app: label-front 
+  labels:                   
+    app: label-front            # Метка самого Deployment (необязательно, но полезно)
   namespace: app                     
 spec:
   replicas: 2 # Колличество подов 
   selector:
     matchLabels:
-      app: label-front
+      app: label-front           # Селектор: Deployment управляет подами с этой меткой
   template:
     metadata:
       labels:
-        app: label-front
+        app: label-front         # Метка для подов, создаваемых этим Deployment
+        app1: label-front-test
     spec:
       containers:
         - name: multitool

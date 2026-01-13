@@ -11,8 +11,17 @@ spec:
     - Ingress
   ingress:
     - from:
-      - podSelector:
-          matchLabels:
-            app: label-front
-
+        - podSelector:
+            matchLabels:
+              app: label-front
+      ports:
+        - protocol: TCP
+          port: 80
+    - from:
+        - podSelector:
+            matchLabels:
+              app: label-test
+      ports:
+        - protocol: TCP
+          port: 80
 

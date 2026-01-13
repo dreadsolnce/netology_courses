@@ -1,0 +1,12 @@
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-icmp-deployment
+  namespace: app
+spec:
+  selector: app == label-back
+  ingress:
+  - action: Allow
+    protocol: ICMP
+#    icmp:
+#      type: 8 # Echo Request
