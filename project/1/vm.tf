@@ -1,73 +1,69 @@
 # Создание виртуальной машины
 #---------------------------------------------------------------------
-
-data "yandex_compute_image" "image-vm" {
-  family = var.image-vm-family
+# Создание виртуальных машин : front, back, nat
+data "yandex_compute_image" "imageOS" {
+  family = var.imageVM
 }
 
-resource "yandex_compute_instance" "vm-public" {
-  # name        = join("", [var.nameVMWeb, "-${count.index+1}"])
-  name        = var.name-vm[0]
-  zone        = var.zone[0]
-  platform_id = var.type-vm
-  hostname    = var.name-vm[0]
-#   allow_stopping_for_update = true # Добавьте эту строку
+resource "yandex_compute_instance" "vm" {
+  for_each = { 0 = "front", 1 = "back"}
+
+  name                  = var.settingsVM[each.key].vmNAME
+  zone                  = var.settingsVM[each.key].zoneVM
+  platform_id           = var.type-vm
+  hostname              = var.settingsVM[each.key].vmNAME
+
+  allow_stopping_for_update = true # Останавливает vm без предупреждения при изменении конфигурации
 
   resources {
-    cores         = var.resourcesVM.cores
-    memory        = var.resourcesVM.memory
-    core_fraction = var.resourcesVM.core_fraction
+    cores                 = var.resourcesVM.cores
+    memory                = var.resourcesVM.memory
+    core_fraction         = var.resourcesVM.core_fraction
   }
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.image-vm.image_id
+      image_id = data.yandex_compute_image.imageOS.image_id
     }
   }
 
   network_interface {
-    subnet_id = yandex_vpc_subnet.vpc_subnet_public.id
-    security_group_ids = [yandex_vpc_security_group.sg-public.id]
-    nat = true
+    subnet_id              = each.value == "back" ? yandex_vpc_subnet.vpc_subnet_private.id : yandex_vpc_subnet.vpc_subnet_public.id
+    security_group_ids     = each.value == "back" ? [yandex_vpc_security_group.sg-private.id] : [yandex_vpc_security_group.sg-public.id]
+    nat                    = var.settingsVM[each.key].typeNAT
+    ip_address             = var.settingsVM[each.key].ipaddress
   }
 
   metadata = {
-    serial-port-enable = 1
-    # Через файл открытого ключа pub на локальной машине
-    ssh-keys = "ubuntu:${local.ssh_pub_key}"
+    serial-port-enable  = 1
+    ssh-keys            = "ubuntu:${local.ssh_pub_key}"    # Через файл открытого ключа pub на локальной машине
   }
 }
 
-resource "yandex_compute_instance" "vm-private" {
-  # name        = join("", [var.nameVMWeb, "-${count.index+1}"])
-  name        = var.name-vm[1]
-  zone        = var.zone[1
-]
-  platform_id = var.type-vm
-  hostname    = var.name-vm[1]
-#   allow_stopping_for_update = true # Добавьте эту строку
+resource "yandex_compute_instance" "vm-nat" {
+  name                  = var.settingsVM[2].vmNAME
+  zone                  = var.settingsVM[2].zoneVM
+  platform_id           = var.type-vm
+  hostname              = var.settingsVM[2].vmNAME
+
+  allow_stopping_for_update = true # Останавливает vm без предупреждения при изменении конфигурации
 
   resources {
-    cores         = var.resourcesVM.cores
-    memory        = var.resourcesVM.memory
-    core_fraction = var.resourcesVM.core_fraction
+    cores                 = var.resourcesVM.cores
+    memory                = var.resourcesVM.memory
+    core_fraction         = var.resourcesVM.core_fraction
   }
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.image-vm.image_id
+      image_id = var.imageNAT
     }
   }
 
   network_interface {
-    subnet_id = yandex_vpc_subnet.vpc_subnet_private.id
-    security_group_ids = [yandex_vpc_security_group.sg-private.id]
-#    nat = true
-  }
-
-  metadata = {
-    serial-port-enable = 1
-    # Через файл открытого ключа pub на локальной машине
-    ssh-keys = "ubuntu:${local.ssh_pub_key}"
+    subnet_id              = yandex_vpc_subnet.vpc_subnet_public.id
+    security_group_ids     = [yandex_vpc_security_group.sg-public.id]
+    nat                    = var.settingsVM[2].typeNAT
+    ip_address             = var.settingsVM[2].ipaddress
   }
 }

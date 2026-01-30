@@ -36,47 +36,23 @@ variable "cidr" {
 }
 
 # ######################## переменные nat ##############################################
-# variable "platform_id" {
-#   type        = string
-#   default     = "standard-v3"
-#   description = "тип конфигурации NAT instance"
-# }
-#
-# variable "name_instance_nat" {
-#   type        = string
-#   default     = "nat"
-#   description = "Название NAT instance"
-# }
-#
-# variable "nat_ip" {
+# variable "natIP" {
 #   type        = string
 #   default     = "192.168.10.254"
 #   description = "ip адрес NAT instance"
 # }
-#
-# variable "nat_core" {
-#   type = number
-#   default = 2
-#   description = "Number of virtual processors"
-# }
-#
-# variable "nat_memory" {
-#   type = number
-#   default = 1
-#   description = "Amount of memory"
-# }
-#
-# variable "nat_core_fraction" {
-#   type = number
-#   default = 20
-#   description = "CPU Power Ratio"
-# }
-#
-# ######################## переменные vm1 ##############################################
-variable "image-vm-family" {
+
+# ######################## переменные vm ##############################################
+variable "imageVM" {
   type            = string
   default         = "ubuntu-2204-lts"
-  description     = "Образ операционной системы используемой в vm"
+  description     = "Образ операционной системы для NAT"
+}
+
+variable "imageNAT" {
+  type            = string
+  default         = "fd80mrhj8fl2oe87o4e1"
+  description     = "Образ операционной системы для NAT"
 }
 
 variable "type-vm" {
@@ -85,31 +61,50 @@ variable "type-vm" {
   description     = "Тип создаваемой виртуальной машины"
 }
 
-variable "name-vm" {
-  type            = list(string)
-  default         = ["vm-public","vm-private","vm-nat"]
-  description     = "Имена виртуальных машин"
+variable "settingsVM" {
+  type = list(object(
+    {
+      vmNAME   = string,
+      typeNAT   = bool,
+      zoneVM    = string,
+      ipaddress = string
+    }
+  ))
+  default = [
+    {
+      vmNAME = "front"
+      typeNAT = true
+      zoneVM = "ru-central1-a"
+      ipaddress = "192.168.10.11"
+    },
+    {
+      vmNAME = "back"
+      typeNAT = false
+      zoneVM = "ru-central1-b"
+      ipaddress = "192.168.20.12"
+    },
+    {
+      vmNAME    = "nat"
+      typeNAT   = true
+      zoneVM    = "ru-central1-a"
+      ipaddress = "192.168.10.254"
+    }
+  ]
+  description = "Индивидуальные настройки для vm"
 }
 
 variable "resourcesVM" {
   type = object(
     {
-      cores = number
-      memory: number
-      core_fraction: number
+      cores           = number
+      memory          = number
+      core_fraction   = number
     }
   )
   default = {
-    cores         = 2
-    memory        = 1
-    core_fraction = 20
+    cores             = 2
+    memory            = 1
+    core_fraction     = 20
   }
-  description = "Ресурсы для создания первых двух машин"
+  description = "Ресурсы для создания виртуальных машин (одинаковые для всех машин)"
 }
-#
-# ######################## переменные vm2 ##############################################
-# variable "name-vm2" {
-#   type            = string
-#   default         = "vm2"
-#   description     = "Имя виртуальной машины и ее hostname"
-# }
