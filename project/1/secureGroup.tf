@@ -58,4 +58,3 @@ resource "yandex_vpc_security_group" "sg-private" {
     v4_cidr_blocks = ["192.168.10.0/24"]
   }
 }
-

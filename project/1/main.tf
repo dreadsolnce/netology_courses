@@ -2,19 +2,13 @@ resource "yandex_vpc_network" "vpc-netology" {
   name = var.vpc_name == null ? "unknown" : var.vpc_name
 }
 
-# Публичная подсеть
-resource "yandex_vpc_subnet" "vpc_subnet_public" {
-  name           = var.vpc_subnet_name[0]
-  zone           = var.zone[0]
+resource "yandex_vpc_subnet" "subnet" {
+  for_each = var.subnets
+
+  name           = each.key
+  zone           = each.value.zone
   network_id     = yandex_vpc_network.vpc-netology.id
-  v4_cidr_blocks = [var.cidr[0]]
+  v4_cidr_blocks = [each.value.cidr]
+  route_table_id = each.key == "private" ? yandex_vpc_route_table.rt.id : null
 }
 
-# Приватная подсеть
-resource "yandex_vpc_subnet" "vpc_subnet_private" {
-  name           = var.vpc_subnet_name[1]
-  zone           = var.zone[1]
-  network_id     = yandex_vpc_network.vpc-netology.id
-  v4_cidr_blocks = [var.cidr[1]]
-  route_table_id = yandex_vpc_route_table.rt.id
-}
