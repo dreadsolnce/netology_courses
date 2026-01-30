@@ -87,7 +87,7 @@ variable "type-vm" {
 
 variable "name-vm" {
   type            = list(string)
-  default         = ["vm1","vm2"]
+  default         = ["vm-public","vm-private","vm-nat"]
   description     = "Имена виртуальных машин"
 }
 
