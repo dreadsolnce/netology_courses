@@ -1,17 +1,17 @@
 # Создание виртуальной машины
 #---------------------------------------------------------------------
-# Создание виртуальных машин : front, back
+# Создание виртуальных машин : front, back, nat
 data "yandex_compute_image" "imageOS" {
   family = var.imageVM
 }
 
 resource "yandex_compute_instance" "vm" {
-  for_each = var.settingsVM
+  for_each = { 0 = "front", 1 = "back"}
 
-  name                  = each.key
-  hostname              = each.key
-  zone                  = each.value.zone
-  platform_id           = var.platformVM
+  name                  = var.settingsVM[each.key].vmNAME
+  zone                  = var.settingsVM[each.key].zoneVM
+  platform_id           = var.type-vm
+  hostname              = var.settingsVM[each.key].vmNAME
 
   allow_stopping_for_update = true # Останавливает vm без предупреждения при изменении конфигурации
 
@@ -28,11 +28,10 @@ resource "yandex_compute_instance" "vm" {
   }
 
   network_interface {
-    # security_group_ids     = ["yandex_vpc_security_group.${each.value.sg}.id"]   yandex_vpc_subnet.subnet[var.settingsVmNAT.subnet].id
-    subnet_id              = yandex_vpc_subnet.subnet[each.value.subnet].id
-    security_group_ids     = each.key == "back" ? [yandex_vpc_security_group.sg-private.id] : [yandex_vpc_security_group.sg-public.id]
-    nat                    = each.value.nat
-    ip_address             = each.value.ipaddress
+    subnet_id              = each.value == "back" ? yandex_vpc_subnet.vpc_subnet_private.id : yandex_vpc_subnet.vpc_subnet_public.id
+    security_group_ids     = each.value == "back" ? [yandex_vpc_security_group.sg-private.id] : [yandex_vpc_security_group.sg-public.id]
+    nat                    = var.settingsVM[each.key].typeNAT
+    ip_address             = var.settingsVM[each.key].ipaddress
   }
 
   metadata = {
@@ -41,12 +40,11 @@ resource "yandex_compute_instance" "vm" {
   }
 }
 
-# Создание виртуальной машины NAT
-resource "yandex_compute_instance" "nat" {
-  name                  = var.settingsVmNAT.name
-  hostname              = var.settingsVmNAT.name
-  zone                  = var.settingsVmNAT.zone
-  platform_id           = var.platformVM
+resource "yandex_compute_instance" "vm-nat" {
+  name                  = var.settingsVM[2].vmNAME
+  zone                  = var.settingsVM[2].zoneVM
+  platform_id           = var.type-vm
+  hostname              = var.settingsVM[2].vmNAME
 
   allow_stopping_for_update = true # Останавливает vm без предупреждения при изменении конфигурации
 
@@ -63,8 +61,9 @@ resource "yandex_compute_instance" "nat" {
   }
 
   network_interface {
-    subnet_id              = yandex_vpc_subnet.subnet[var.settingsVmNAT.subnet].id
+    subnet_id              = yandex_vpc_subnet.vpc_subnet_public.id
     security_group_ids     = [yandex_vpc_security_group.sg-public.id]
-    ip_address             = var.settingsVmNAT.ipaddress
+    nat                    = var.settingsVM[2].typeNAT
+    ip_address             = var.settingsVM[2].ipaddress
   }
 }

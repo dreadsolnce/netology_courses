@@ -17,25 +17,32 @@ variable "vpc_name" {
   description = "Название сети"
 }
 
-variable "subnets" {
-  description = "Перечень подсетей где ключ имя подсети, значение словарь"
-  type = map(object({
-    zone = string
-    cidr = string
-  }))
-  default = {
-    "public" = {
-      zone = "ru-central1-a",
-      cidr = "192.168.10.0/24"
-    }
-    "private" = {
-      zone = "ru-central1-b",
-      cidr = "192.168.20.0/24"
-    }
-  }
+variable "zone" {
+  type        = list(string)
+  default     = ["ru-central1-a", "ru-central1-b"]
+  description = "Используемая зона"
 }
 
-######################### переменные vm ###############################################
+variable "vpc_subnet_name" {
+  type        = list(string)
+  default     = ["public", "private"]
+  description = "Название подсетей для vm"
+}
+
+variable "cidr" {
+    type          = list(string)
+    default       = ["192.168.10.0/24", "192.168.20.0/24"]
+    description   = "Диапазон ip адресов для публичной и приватной подсети"
+}
+
+# ######################## переменные nat ##############################################
+# variable "natIP" {
+#   type        = string
+#   default     = "192.168.10.254"
+#   description = "ip адрес NAT instance"
+# }
+
+# ######################## переменные vm ##############################################
 variable "imageVM" {
   type            = string
   default         = "ubuntu-2204-lts"
@@ -48,10 +55,42 @@ variable "imageNAT" {
   description     = "Образ операционной системы для NAT"
 }
 
-variable "platformVM" {
+variable "type-vm" {
   type            = string
   default         = "standard-v3"
   description     = "Тип создаваемой виртуальной машины"
+}
+
+variable "settingsVM" {
+  type = list(object(
+    {
+      vmNAME   = string,
+      typeNAT   = bool,
+      zoneVM    = string,
+      ipaddress = string
+    }
+  ))
+  default = [
+    {
+      vmNAME = "front"
+      typeNAT = true
+      zoneVM = "ru-central1-a"
+      ipaddress = "192.168.10.11"
+    },
+    {
+      vmNAME = "back"
+      typeNAT = false
+      zoneVM = "ru-central1-b"
+      ipaddress = "192.168.20.12"
+    },
+    {
+      vmNAME    = "nat"
+      typeNAT   = true
+      zoneVM    = "ru-central1-a"
+      ipaddress = "192.168.10.254"
+    }
+  ]
+  description = "Индивидуальные настройки для vm"
 }
 
 variable "resourcesVM" {
@@ -68,44 +107,4 @@ variable "resourcesVM" {
     core_fraction     = 20
   }
   description = "Ресурсы для создания виртуальных машин (одинаковые для всех машин)"
-}
-
-variable "settingsVM" {
-  description = "Перечень настроек для vm, где public - использовать ли NAT"
-  type = map(object({
-    nat         = bool
-    zone        = string
-    subnet      = string
-    ipaddress   = string
-  }))
-  default = {
-    "front" = {
-      nat         = true
-      zone        = "ru-central1-a"
-      subnet      = "public"
-      ipaddress   = "192.168.10.11"
-    },
-    "back" = {
-      nat         = false
-      zone        = "ru-central1-b"
-      subnet      = "private"
-      ipaddress   = "192.168.20.12"
-    }
-  }
-}
-
-variable "settingsVmNAT" {
-  description = "Перечень настроек для vm nat"
-  type = object({
-    name      = string
-    zone      = string
-    subnet    = string
-    ipaddress = string
-  })
-  default = {
-    name        = "nat"
-    zone        = "ru-central1-a"
-    subnet      = "public"
-    ipaddress = "192.168.10.254"
-  }
 }
