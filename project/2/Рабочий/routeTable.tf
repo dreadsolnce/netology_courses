@@ -4,9 +4,7 @@ resource "yandex_vpc_route_table" "rt" {
   network_id = yandex_vpc_network.vpc-netology.id
 
   static_route {
-    #destination_prefix = "0.0.0.0/0"
-    destination_prefix = "192.168.10.254
-/24"
-    next_hop_address   = yandex_compute_instance.nat.network_interface.0.ip_address
+    destination_prefix = "0.0.0.0/0"
+    next_hop_address   = var.settingsVmNAT.ipaddress
   }
 }
