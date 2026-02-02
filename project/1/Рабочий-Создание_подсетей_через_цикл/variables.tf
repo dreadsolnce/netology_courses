@@ -100,6 +100,7 @@ variable "settingsVM" {
 variable "settingsVmNAT" {
   description = "Перечень настроек для vm nat"
   type = object({
+    nat         = bool
     name      = string
     zone      = string
     subnet    = string
@@ -110,5 +111,6 @@ variable "settingsVmNAT" {
     zone        = "ru-central1-a"
     subnet      = "public"
     ipaddress   = "192.168.10.254"
+    nat         = true
   }
 }
