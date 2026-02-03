@@ -7,7 +7,7 @@ resource "yandex_compute_instance_group" "group-vm" {
   # Политика масштабирования: фиксированное количество ВМ
   scale_policy {
     fixed_scale {
-      size = 3 # <-- Здесь задается количество ВМ
+      size = 1 # <-- Здесь задается количество ВМ
     }
   }
 
@@ -37,6 +37,7 @@ resource "yandex_compute_instance_group" "group-vm" {
     network_interface {
       network_id = yandex_vpc_network.vpc-netology.id
       subnet_ids = [yandex_vpc_subnet.subnet["public"].id]
+      nat = true
     }
 
     metadata = {
