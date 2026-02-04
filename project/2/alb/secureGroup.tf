@@ -38,14 +38,6 @@ resource "yandex_vpc_security_group" "sg-private" {
     v4_cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
-    protocol       = "tcp"
-    description    = "Allow https"
-    from_port      = 443
-    to_port        = 443
-    v4_cidr_blocks = ["0.0.0.0/0"]
-  }
-
   # Разрешить весь входящий трафик!
   # ingress {
   #   protocol       = "ANY"
@@ -58,14 +50,7 @@ resource "yandex_vpc_security_group" "sg-private" {
     description = "Allow incoming traffic ssh"
     from_port   = 22
     to_port     = 22
-    v4_cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    protocol       = "TCP"
-    description    = "Allow all incoming http"
-    from_port      = 80
-    to_port        = 80
-    v4_cidr_blocks = ["0.0.0.0/0"]
+    v4_cidr_blocks = ["192.168.10.11/32"]
   }
   ingress {
     protocol    = "ICMP"

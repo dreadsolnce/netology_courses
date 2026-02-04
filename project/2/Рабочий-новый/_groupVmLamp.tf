@@ -54,7 +54,7 @@ resource "yandex_compute_instance_group" "group-vm" {
       # Через файл открытого ключа pub на локальной машине
       ssh-keys           = "ubuntu:${local.ssh_pub_key}"
       # Установка дополнительного ПО
-      user-data          = data.template_file.cloudinit.rendered
+      user-data          = data.template_file.cloudinit-lamp.rendered
     }
   }
   # Политика размещения: все ВМ в одной зоне
@@ -75,12 +75,11 @@ resource "yandex_compute_instance_group" "group-vm" {
   }
 }
 
-data "template_file" "cloudinit" {
-  template = file("./cloud-init.yml")
+data "template_file" "cloudinit-lamp" {
+  template = file("./cloud-init-lamp.yml")
   vars = {
     ssh_public_key = local.ssh_pub_key
     url_for_jpg = "https://storage.yandexcloud.net/${yandex_storage_bucket.bucket-image.bucket}/${yandex_storage_object.picture.key}"
-    # hostname    = yandex_compute_instance_group.group-vm.name
   }
 }
 

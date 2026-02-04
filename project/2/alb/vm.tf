@@ -37,11 +37,6 @@ resource "yandex_compute_instance" "vm" {
   metadata = {
     serial-port-enable  = 1
     ssh-keys            = "ubuntu:${local.ssh_pub_key}"    # Через файл открытого ключа pub на локальной машине
-    user-data = templatefile("${path.module}/cloud-init-vm.yml", {
-      ssh_public_key      = local.ssh_pub_key
-      packages            = jsonencode(var.packages)
-      html_text           = each.key
-    })
   }
 }
 

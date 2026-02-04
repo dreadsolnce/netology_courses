@@ -83,7 +83,7 @@ variable "settingsVM" {
   }))
   default = {
     "front" = {
-      nat         = true
+      nat         = false
       zone        = "ru-central1-a"
       subnet      = "public"
       ipaddress   = "192.168.10.11"
@@ -231,4 +231,78 @@ variable "lb_name" {
   type        = string
   default     = "network-balancer"
   description = "Имя сетевого балансировщика"
+}
+
+######################### Переменные для applications балансировщика ###############################################
+variable "alb" {
+  type = map(object({
+    name_tg           = string
+    name_bg           = string
+    name_route_http   = string
+    prefix            = string
+    prefix_rewrite    = string
+  }))
+  default = {
+    "front" = {
+      name_tg             = "front"
+      name_bg             = "front"
+      name_route_http     = "front"
+      prefix              = "/web"
+      prefix_rewrite      = "/"
+    }
+    "back" = {
+      name_tg             = "back"
+      name_bg             = "back"
+      name_route_http     = "back"
+      prefix              = "/back"
+      prefix_rewrite      = "/"
+    }
+  }
+  description = "Перечень настроек для виртуальных машин из первого задания"
+}
+
+variable "group_backend" {
+  type = object({
+    name            = string
+    port            = number
+    health_timeout  = string
+    health_interval = string
+  })
+  default = {
+    name            = "backend"
+    port            = 80
+    health_timeout  =  "1s"
+    health_interval = "2s"
+  }
+}
+
+variable "name_router" {
+  type = string
+  default = "production"
+}
+
+variable "name_virualhost" {
+  type = string
+  default = "site"
+}
+
+variable "name_balancer" {
+  type = string
+  default = "alb"
+}
+
+variable "name_listen" {
+  type = string
+  default = "http"
+}
+
+variable "port_listen" {
+  type = list(number)
+  default = [80]
+}
+
+variable "packages" {
+    type        = list(string)
+    default     = [ "nginx"]
+    description = "Устанавливаемые пакеты по умолчанию"
 }

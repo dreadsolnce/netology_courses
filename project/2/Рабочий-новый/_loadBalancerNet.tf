@@ -31,7 +31,6 @@ resource "yandex_lb_network_load_balancer" "load-balancer" {
   # Привязываем целевую группу и настраиваем проверку состояния
   attached_target_group {
     target_group_id = yandex_lb_target_group.group-lb-target.id
-    # target_group_id = yandex_compute_instance_group.group-vm.id
 
     healthcheck {
       name = "http-healthcheck"
