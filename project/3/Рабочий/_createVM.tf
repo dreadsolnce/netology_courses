@@ -28,10 +28,8 @@ resource "yandex_compute_instance" "vm" {
   }
 
   network_interface {
-    # subnet_id              = yandex_vpc_subnet.subnet[each.value.subnet].id
-    subnet_id              = each.value.subnet == "private" ? yandex_vpc_subnet.vpc_subnet_private.id : yandex_vpc_subnet.vpc_subnet_public.id
-    # security_group_ids     = each.key == "back" ? [yandex_vpc_security_group.sg-private.id] : [yandex_vpc_security_group.sg-public.id]
-    security_group_ids     = each.value.subnet == "private" ? [yandex_vpc_security_group.sg-private.id] : [yandex_vpc_security_group.sg-public.id]
+    subnet_id              = yandex_vpc_subnet.subnet[each.value.subnet].id
+    security_group_ids     = each.key == "back" ? [yandex_vpc_security_group.sg-private.id] : [yandex_vpc_security_group.sg-public.id]
     nat                    = each.value.nat
     ip_address             = each.value.ipaddress
   }
@@ -39,6 +37,11 @@ resource "yandex_compute_instance" "vm" {
   metadata = {
     serial-port-enable  = 1
     ssh-keys            = "ubuntu:${local.ssh_pub_key}"    # Через файл открытого ключа pub на локальной машине
+    user-data = templatefile("${path.module}/cloud-init-vm.yml", {
+      ssh_public_key      = local.ssh_pub_key
+      packages            = jsonencode(var.packages)
+      html_text           = each.key
+    })
   }
 }
 
@@ -64,10 +67,14 @@ resource "yandex_compute_instance" "nat" {
   }
 
   network_interface {
-    # subnet_id              = yandex_vpc_subnet.subnet[var.settingsVmNAT.subnet].id
-    subnet_id              = yandex_vpc_subnet.vpc_subnet_public.id
+    subnet_id              = yandex_vpc_subnet.subnet[var.settingsVmNAT.subnet].id
     security_group_ids     = [yandex_vpc_security_group.sg-public.id]
     ip_address             = var.settingsVmNAT.ipaddress
-    nat                    = true
+    nat                    = var.settingsVmNAT.nat
+  }
+
+  metadata = {
+    serial-port-enable  = 1
+    ssh-keys            = "ubuntu:${local.ssh_pub_key}"    # Через файл открытого ключа pub на локальной машине
   }
 }
