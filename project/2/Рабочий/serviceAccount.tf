@@ -1,6 +1,7 @@
 # Сервисный аккаунт для группы ВМ ---
 resource "yandex_iam_service_account" "service_account" {
   name        = var.service_account_name
+  folder_id   = var.folder_id
   description = "Сервисный аккаунт для группы ВМ с ролью editor и доступа к бакету"
 }
 
