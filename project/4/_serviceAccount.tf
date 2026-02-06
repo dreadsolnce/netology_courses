@@ -38,3 +38,15 @@ resource "yandex_kms_symmetric_key_iam_binding" "account-role-kms" {
     yandex_iam_service_account.service-account,
   ]
 }
+
+# Назначение роли kluster для сервисного аккаунта devops
+resource "yandex_resourcemanager_folder_iam_binding" "account-role-k8s" {
+  folder_id = var.folder_id
+  role = "kms.keys.encrypterDecrypter"
+  members = [
+    "serviceAccount:${yandex_iam_service_account.service-account.id}"
+  ]
+  depends_on = [
+    yandex_iam_service_account.service-account,
+  ]
+}

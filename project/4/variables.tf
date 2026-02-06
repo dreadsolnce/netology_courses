@@ -17,25 +17,63 @@ variable "vpc_name" {
   description = "Название сети"
 }
 
-variable "subnets" {
-  description = "Перечень подсетей где ключ имя подсети, значение словарь"
+variable "subnets-private" {
+  description = "Перечень приватных подсетей где ключ имя подсети, значение словарь"
   type = map(object({
     name = string
     zone = string
-    cidr = string
+    cidr = list(string)
+    description = string
   }))
   default = {
-    "public" = {
-      name = "public"
-      zone = "ru-central1-a",
-      cidr = "192.168.10.0/24"
-    }
-    "private" = {
-      name = "private"
-      zone = "ru-central1-b",
-      cidr = "192.168.20.0/24"
+    "private-1" = {
+      name = "private-1"
+      zone = "ru-central1-a"
+      cidr = ["192.168.110.0/24"]
+      description  = "Приватная подсеть"
+    },
+    "private-2" = {
+      name = "private-2"
+      zone = "ru-central1-b"
+      cidr = ["192.168.120.0/24"]
+      description  = "Приватная подсеть"
     }
   }
+}
+
+variable "subnets-public" {
+  description = "Перечень публичных подсетей где ключ имя подсети, значение словарь"
+  type = map(object({
+    name        = string
+    zone        = string
+    cidr = list(string)
+    description = string
+  }))
+  default = {
+    "public-1" = {
+      name        = "public-1"
+      zone        = "ru-central1-a"
+      cidr = ["192.168.10.0/24"]
+      description = "Публичная подсеть"
+    }
+    "public-2" = {
+      name        = "public-2"
+      zone        = "ru-central1-b"
+      cidr = ["192.168.20.0/24"]
+      description = "Публичная подсеть"
+    }
+    "public-3" = {
+      name        = "public-3"
+      zone        = "ru-central1-d"
+      cidr = ["192.168.30.0/24"]
+      description = "Публичная подсеть"
+    }
+  }
+}
+
+variable "public-zone-ip" {
+  type        = string
+  default     = "ru-central1-a"
 }
 
 ######################### переменные VM и NAT ###############################################
@@ -327,4 +365,63 @@ variable "kms_key" {
     period    = "8760h"
     protect = false
   }
+}
+
+####################### Переменные Базы данных MySql #############################################
+variable "cluster" {
+  description = "Переменные для кластера MySQL базы данных"
+  type          = object({
+    name        = string
+    type        = string
+    version     = string
+    maintenance = string
+    backup = object({
+      minute =  number
+      hours = number
+    })
+    protection  = bool
+  })
+  default = {
+    name = "mysql-cluster"
+    type = "PRESTABLE"
+    version    = "8.4"
+    maintenance = "ANYTIME"
+    backup = {
+      hours = 23
+      minute = 59
+    }
+    protection  = true
+  }
+}
+
+variable "cluster_resources" {
+  description = "Ресурсы для vm кластера"
+  type = object({
+    resource_preset_id = string
+    disk_type_id       = string
+    disk_size          = number
+  })
+  default = {
+    resource_preset_id  = "b1.medium"
+    disk_type_id        = "network-hdd"
+    disk_size           = 20
+  }
+}
+
+variable "database" {
+  type = object({
+    name      = string
+    user      = string
+    roles     = list(string)
+  })
+  default = {
+    name      = "netology_db"
+    user      = "test"
+    roles     = ["ALL"]
+  }
+}
+
+variable "password_database" {
+  type = string
+  description = "Пароль от базы данных"
 }

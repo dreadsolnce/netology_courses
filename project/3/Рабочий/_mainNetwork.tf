@@ -9,7 +9,8 @@ resource "yandex_vpc_subnet" "subnet" {
   zone           = each.value.zone
   network_id     = yandex_vpc_network.vpc-netology.id
   v4_cidr_blocks = [each.value.cidr]
-  route_table_id = each.value.name == "private" ? yandex_vpc_route_table.rt.id : null
+  # route_table_id = each.value.name == "private" ? yandex_vpc_route_table.rt.id : null
+  route_table_id = yandex_vpc_route_table.rt.id
 }
 
 # Резервируем статический публичный IP-адрес для балансировщика
