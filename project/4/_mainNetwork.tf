@@ -1,7 +1,9 @@
+# Создание сети для проекта
 resource "yandex_vpc_network" "vpc-netology" {
   name = var.vpc_name == null ? "unknown" : var.vpc_name
 }
 
+# Создание 2-ух приватных подсетей для проекта в разных зонах
 resource "yandex_vpc_subnet" "subnet-private" {
   for_each = var.subnets-private
 
@@ -11,9 +13,11 @@ resource "yandex_vpc_subnet" "subnet-private" {
   v4_cidr_blocks = each.value.cidr
   description    = each.value.description
   # route_table_id = each.value.name == "private" ? yandex_vpc_route_table.rt.id : null
-  # route_table_id = yandex_vpc_route_table.rt.id
+  # Применяем таблицу маршрутизации, т.к. ВМ будут без публичного адреса
+  route_table_id = yandex_vpc_route_table.rt.id
 }
 
+# Создание 3-ех публичных подсетей для проекта в разных зонах
 resource "yandex_vpc_subnet" "subnet-public" {
   for_each = var.subnets-public
 
@@ -23,6 +27,7 @@ resource "yandex_vpc_subnet" "subnet-public" {
   v4_cidr_blocks = each.value.cidr
   description    = each.value.description
   # route_table_id = each.value.name == "private" ? yandex_vpc_route_table.rt.id : null
+  # Применяем таблицу маршрутизации, т.к. ВМ будут без публичного адреса
   # route_table_id = yandex_vpc_route_table.rt.id
 }
 

@@ -123,14 +123,14 @@ variable "settingsVM" {
     "front" = {
       nat         = false
       zone        = "ru-central1-a"
-      subnet      = "public"
+      subnet      = "public-1"
       ipaddress   = "192.168.10.11"
     },
     "back" = {
       nat         = false
       zone        = "ru-central1-b"
-      subnet      = "private"
-      ipaddress   = "192.168.20.12"
+      subnet      = "private-1"
+      ipaddress   = "192.168.110.12"
     }
   }
 }
@@ -147,7 +147,7 @@ variable "settingsVmNAT" {
   default = {
     name        = "nat"
     zone        = "ru-central1-a"
-    subnet      = "public"
+    subnet      = "public-1"
     ipaddress   = "192.168.10.254"
     nat         = true
   }
@@ -257,17 +257,27 @@ variable "service_account_name" {
   description = "Имя сервисного аккаунта"
 }
 
-variable "role_sa" {
-  type = string
-  default = "compute.admin"
-  description = "Роль editor для создаваемого сервисного аккаунта"
-}
-
-variable "role_sa_vpc" {
-  type        = string
-  default   = "vpc.admin"
-  # default     = "resource-manager.admin"
-  description = "Роль редактор сети для создаваемого сервисного аккаунта"
+variable "service_account_role" {
+  type = object({
+    role_admin      = string
+    role_vpc        = string
+    role_kms        = string
+    role_k8s        = string
+    role_container  = string
+    role_cluster    = string
+    role_balancer   = string
+    description     = string
+  })
+  default = {
+    role_admin      = "compute.admin"
+    role_vpc        = "vpc.admin"
+    role_kms        = "kms.keys.encrypterDecrypter"
+    role_k8s        = "k8s.admin"
+    role_container  = "container-registry.images.puller"
+    role_cluster    = "k8s.clusters.agent"
+    role_balancer   = "load-balancer.admin"
+    description     = "Необходимые роли сервисного аккаунта"
+  }
 }
 
 ######################### Переменные для сетевого балансировщика ###############################################
@@ -368,7 +378,7 @@ variable "kms_key" {
 }
 
 ####################### Переменные Базы данных MySql #############################################
-variable "cluster" {
+variable "cluster_mysql" {
   description = "Переменные для кластера MySQL базы данных"
   type          = object({
     name        = string
@@ -382,7 +392,7 @@ variable "cluster" {
     protection  = bool
   })
   default = {
-    name = "mysql-cluster"
+    name = "cluster-mysql"
     type = "PRESTABLE"
     version    = "8.4"
     maintenance = "ANYTIME"
@@ -390,11 +400,11 @@ variable "cluster" {
       hours = 23
       minute = 59
     }
-    protection  = true
+    protection  = false
   }
 }
 
-variable "cluster_resources" {
+variable "cluster_mysql_resources" {
   description = "Ресурсы для vm кластера"
   type = object({
     resource_preset_id = string
@@ -424,4 +434,32 @@ variable "database" {
 variable "password_database" {
   type = string
   description = "Пароль от базы данных"
+}
+
+####################### Переменные кластера k8s #############################################
+variable "cluster_k8s_name" {
+  type = string
+  default = "k8s-cluster"
+  description = "Имя кластера"
+}
+
+variable "cluster_k8s_group_name" {
+  type = string
+  default = "worker-node"
+  description = "Имя для группы node"
+}
+
+variable "cluster_k8s_node" {
+  type = object({
+    type  = string
+    size  = number
+    subnet_name  = string
+  })
+  default = {
+    type  = "network-hdd"
+    size  = 30
+    subnet_name  = "private-1"
+
+  }
+  description = "Конфигурация для рабочих нод кластера"
 }

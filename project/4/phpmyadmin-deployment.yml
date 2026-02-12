@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin
+  labels:
+    app: phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+    spec:
+      containers:
+      - name: phpmyadmin
+        image: phpmyadmin:latest
+#        image: nginx:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: PMA_HOST
+          value: "rc1a-krq7mrent4kb2694.mdb.yandexcloud.net" # Адрес вашего MySQL сервиса
+        - name: MYSQL_USERNAME
+          value: "test"
+        - name: MYSQL_PASSWORD
+          value: "12345678"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin
+spec:
+  type: LoadBalancer # Или ClusterIP для использования с Ingress
+  selector:
+    app: phpmyadmin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+
+
+

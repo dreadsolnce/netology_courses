@@ -1,0 +1,20 @@
+#cloud-config
+users:
+  - name: ubuntu
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+package_update: true
+package_upgrade: false
+
+packages: ${packages}
+
+runcmd:
+  - echo "<!DOCTYPE html><html><body><h1>Hello from Server ${html_text}!</h1></body></html>" | sudo tee /var/www/html/index.nginx-debian.html
+  - 'echo | hostname | xargs echo "$1 <h2>hostname: </h2>" | sudo tee -a /var/www/html/index.nginx-debian.html'
+  - 'echo | ip -4 addr show eth0 | sed -ne "s/^[[:space:]]*inet[[:space:]]\([0-9.]\+\)\/.*/\1/p" | head -n 1 | xargs echo "<h2>ipaddress: </h2>" | sudo tee -a /var/www/html/index.nginx-debian.html'
+
+
+
