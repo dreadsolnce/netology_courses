@@ -1,42 +1,42 @@
-# Создание кластера Kubernetes
-
-resource "yandex_kubernetes_cluster" "k8s_cluster" {
-  name        = var.cluster_k8s_name
-  description = "Тестовый кластер Kubernetes"
-  network_id  = yandex_vpc_network.vpc-netology.id
-
-
-  master {
-    dynamic master_location {
-      for_each = yandex_vpc_subnet.subnet-public
-      content {
-        zone = master_location.value.zone
-        subnet_id = master_location.value.id
-      }
-    }
-
-    # master_location {
-    #   zone = var.subnets-public["public-1"].zone
-    #   subnet_id = yandex_vpc_subnet.subnet-public["public-1"].id
-    # }
-    # master_location {
-    #   zone = var.subnets-public["public-2"].zone
-    #   subnet_id = yandex_vpc_subnet.subnet-public["public-2"].id
-    # }
-    # master_location {
-    #   zone = var.subnets-public["public-3"].zone
-    #   subnet_id = yandex_vpc_subnet.subnet-public["public-3"].id
-    # }
-    public_ip = true
-  }
-  kms_provider {
-    key_id = yandex_kms_symmetric_key.kms-key.id
-  }
-
-  service_account_id = yandex_iam_service_account.service-account.id
-  node_service_account_id = yandex_iam_service_account.service-account.id
-
-  depends_on = [
-    yandex_iam_service_account.service-account,
-  ]
-}
+# # Создание кластера Kubernetes
+#
+# resource "yandex_kubernetes_cluster" "k8s_cluster" {
+#   name        = var.cluster_k8s_name
+#   description = "Тестовый кластер Kubernetes"
+#   network_id  = yandex_vpc_network.vpc-netology.id
+#
+#
+#   master {
+#     dynamic master_location {
+#       for_each = yandex_vpc_subnet.subnet-public
+#       content {
+#         zone = master_location.value.zone
+#         subnet_id = master_location.value.id
+#       }
+#     }
+#
+#     # master_location {
+#     #   zone = var.subnets-public["public-1"].zone
+#     #   subnet_id = yandex_vpc_subnet.subnet-public["public-1"].id
+#     # }
+#     # master_location {
+#     #   zone = var.subnets-public["public-2"].zone
+#     #   subnet_id = yandex_vpc_subnet.subnet-public["public-2"].id
+#     # }
+#     # master_location {
+#     #   zone = var.subnets-public["public-3"].zone
+#     #   subnet_id = yandex_vpc_subnet.subnet-public["public-3"].id
+#     # }
+#     public_ip = true
+#   }
+#   kms_provider {
+#     key_id = yandex_kms_symmetric_key.kms-key.id
+#   }
+#
+#   service_account_id = yandex_iam_service_account.service-account.id
+#   node_service_account_id = yandex_iam_service_account.service-account.id
+#
+#   depends_on = [
+#     yandex_iam_service_account.service-account,
+#   ]
+# }

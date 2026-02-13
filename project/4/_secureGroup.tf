@@ -1,9 +1,10 @@
-# Группа безопасности для сети - public
-resource "yandex_vpc_security_group" "sg-public" {
-  name       = "public"
-  network_id = yandex_vpc_network.vpc-netology.id
+# Группы безопасности для проекта AppWebBack
+resource "yandex_vpc_security_group" "sg-app-web-back-public" {
+  name = "app-web-back-public"
+  network_id = yandex_vpc_network.vpc.id
+  description = "Security group для публичных сервисов проекта AppWebBack"
 
-  # Разрешить весь трафик!
+# Разрешить весь трафик!
   egress {
     protocol       = "ANY"
     description    = "Allow all outgoing traffic"
@@ -17,59 +18,30 @@ resource "yandex_vpc_security_group" "sg-public" {
   }
 }
 
-# Группа безопасности сети - private
-resource "yandex_vpc_security_group" "sg-private" {
-  name       = "private"
-  network_id = yandex_vpc_network.vpc-netology.id
-  description = "Security group для внутренних сервисов приложений (виртуальная машина back)"
+resource "yandex_vpc_security_group" "sg-app-web-back-private" {
+  name        = "app-web-back-private"
+  network_id  = yandex_vpc_network.vpc.id
+  description = "Security group для приватных сервисов проекта AppWebBack"
 
-  # Разрешить весь исходящий трафик!
-  # egress {
-  #   protocol       = "ANY"
-  #   description    = "Allow all outgoing traffic"
-  #   v4_cidr_blocks = ["0.0.0.0/0"]
-  # }
-  # Разрешить только http
-  egress {
-    protocol       = "tcp"
-    description    = "Allow http"
-    from_port      = 80
-    to_port        = 80
-    v4_cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.rules-app-web-back-ingress
+    content {
+      description    = ingress.value.description
+      protocol       = ingress.value.protocol
+      from_port      = ingress.value.from_port
+      to_port        = ingress.value.to_port
+      v4_cidr_blocks = ingress.value.v4_cidr_blocks
+    }
   }
 
-  egress {
-    protocol       = "tcp"
-    description    = "Allow https"
-    from_port      = 443
-    to_port        = 443
-    v4_cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Разрешить весь входящий трафик!
-  # ingress {
-  #   protocol       = "ANY"
-  #   description    = "Allow all incoming traffic"
-  #   v4_cidr_blocks = ["0.0.0.0/0"]
-  # }
-  # Разрешить подключение по ssh с front сервера!
-  ingress {
-    protocol    = "TCP"
-    description = "Allow incoming traffic ssh"
-    from_port   = 22
-    to_port     = 22
-    v4_cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    protocol       = "TCP"
-    description    = "Allow all incoming http"
-    from_port      = 80
-    to_port        = 80
-    v4_cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    protocol    = "ICMP"
-    description = "Allow ping"
-    v4_cidr_blocks = ["192.168.0.0/16"]
+  dynamic "egress" {
+    for_each = var.rules-app-web-back-egress
+    content {
+      description    = egress.value.description
+      protocol       = egress.value.protocol
+      from_port      = egress.value.from_port
+      to_port        = egress.value.to_port
+      v4_cidr_blocks = egress.value.v4_cidr_blocks
+    }
   }
 }

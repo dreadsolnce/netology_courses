@@ -5,8 +5,8 @@ resource "yandex_alb_target_group" "target-group" {
   name              = each.value.name_tg
 
   target {
-    ip_address  = each.key == "front" ? var.settingsVM.front.ipaddress : (each.key == "back" ? var.settingsVM.back.ipaddress : "unknown")
-    subnet_id   = each.key == "front" ? yandex_vpc_subnet.subnet-public["public-1"].id : (each.key == "back" ? yandex_vpc_subnet.subnet-private["private-1"].id : "unknown")
+    ip_address  = each.key == "front" ? var.settings_vm.front.local_ip : (each.key == "back" ? var.settings_vm.back.local_ip : "unknown")
+    subnet_id   = each.key == "front" ? yandex_vpc_subnet.subnet[var.settings_vm.front.subnet].id : (each.key == "back" ? yandex_vpc_subnet.subnet[var.settings_vm.back.subnet].id : "unknown")
   }
 }
 
@@ -65,7 +65,7 @@ resource "yandex_alb_virtual_host" "virtual-host" {
 # Создание Application Load Balancer
 resource "yandex_alb_load_balancer" "create-alb" {
   name       = var.name_balancer
-  network_id = yandex_vpc_network.vpc-netology.id
+  network_id = yandex_vpc_network.vpc.id
 
   # Определяем обработчик для входящего трафика
   listener {
@@ -75,7 +75,7 @@ resource "yandex_alb_load_balancer" "create-alb" {
     endpoint {
       address {
         external_ipv4_address {
-          address = yandex_vpc_address.public-ip-app.external_ipv4_address[0].address
+          address = yandex_vpc_address.alb-public-ip.external_ipv4_address[0].address
         }
       }
       ports = var.port_listen
@@ -89,12 +89,8 @@ resource "yandex_alb_load_balancer" "create-alb" {
   # Размещаем балансировщик в подсети
   allocation_policy {
     location {
-      zone_id   = var.subnets-public["public-1"].zone
-      subnet_id = yandex_vpc_subnet.subnet-public["public-1"].id
+      zone_id   = var.subnets.app_web_back.subnet-public-a.zone
+      subnet_id = yandex_vpc_subnet.subnet[var.subnets.app_web_back.subnet-public-a.name].id
     }
-    # location {
-    #   zone_id   = var.subnets-private["private-1"].zone
-    #   subnet_id = yandex_vpc_subnet.subnet-private["private-1"].id
-    # }
   }
 }

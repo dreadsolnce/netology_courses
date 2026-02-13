@@ -13,89 +13,125 @@ variable "folder_id" {
 
 variable "vpc_name" {
   type        = string
-  default     = "netology_vpc"
-  description = "Название сети"
+  default     = "vpc-netology"
+  description = "Сеть для занятий курса netology"
 }
 
-variable "subnets-private" {
-  description = "Перечень приватных подсетей где ключ имя подсети, значение словарь"
-  type = map(object({
+variable "subnets" {
+  description = "Перечень подсетей где ключ имя проекта (на него можно ссылаться в коде), значение словарь"
+  type = map(map(object({
     name = string
     zone = string
     cidr = list(string)
     description = string
-  }))
+  })))
+  # noinspection TfIncorrectVariableType
   default = {
-    "private-1" = {
-      name = "private-1"
-      zone = "ru-central1-a"
-      cidr = ["192.168.110.0/24"]
-      description  = "Приватная подсеть"
+    "app_web_back" = {
+      "subnet-public-a" = {
+        name        = "app-public-a"
+        zone        = "ru-central1-a"
+        cidr        = ["192.168.10.0/24"]
+        description = "Публичная подсеть для проекта AppWebBack в зоне a"
+      },
+      "subnet-private-a" = {
+        name        = "app-private-a"
+        zone        = "ru-central1-a"
+        cidr        = ["192.168.110.0/24"]
+        description = "Приватная подсеть для проекта AppWebBack в зоне a"
+      },
+      "subnet-private-b" = {
+        name        = "app-private-b"
+        zone        = "ru-central1-b"
+        cidr        = ["192.168.120.0/24"]
+        description = "Приватная подсеть для проекта AppWebBack в зоне b"
+      }
     },
-    "private-2" = {
-      name = "private-2"
-      zone = "ru-central1-b"
-      cidr = ["192.168.120.0/24"]
-      description  = "Приватная подсеть"
+    "app_lamp" = {
+      "subnet-private-a" = {
+        name        = "lamp-private-a"
+        zone        = "ru-central1-a"
+        cidr        = ["192.168.130.0/24"]
+        description = "Приватная подсеть для проекта Lamp в зоне a"
+      }
     }
   }
 }
 
-variable "subnets-public" {
-  description = "Перечень публичных подсетей где ключ имя подсети, значение словарь"
-  type = map(object({
-    name        = string
-    zone        = string
-    cidr = list(string)
-    description = string
-  }))
-  default = {
-    "public-1" = {
-      name        = "public-1"
-      zone        = "ru-central1-a"
-      cidr = ["192.168.10.0/24"]
-      description = "Публичная подсеть"
-    }
-    "public-2" = {
-      name        = "public-2"
-      zone        = "ru-central1-b"
-      cidr = ["192.168.20.0/24"]
-      description = "Публичная подсеть"
-    }
-    "public-3" = {
-      name        = "public-3"
-      zone        = "ru-central1-d"
-      cidr = ["192.168.30.0/24"]
-      description = "Публичная подсеть"
-    }
-  }
-}
-
-variable "public-zone-ip" {
+# variable "subnets-private" {
+#   description = "Перечень приватных подсетей где ключ имя подсети, значение словарь"
+#   type = map(object({
+#     name = string
+#     zone = string
+#     cidr = list(string)
+#     description = string
+#   }))
+#   default = {
+#     "private-1" = {
+#       name = "private-1"
+#       zone = "ru-central1-a"
+#       cidr = ["192.168.110.0/24"]
+#       description  = "Приватная подсеть"
+#     },
+#     "private-2" = {
+#       name = "private-2"
+#       zone = "ru-central1-b"
+#       cidr = ["192.168.120.0/24"]
+#       description  = "Приватная подсеть"
+#     }
+#   }
+# }
+#
+# variable "subnets-public" {
+#   description = "Перечень публичных подсетей где ключ имя подсети, значение словарь"
+#   type = map(object({
+#     name        = string
+#     zone        = string
+#     cidr = list(string)
+#     description = string
+#   }))
+#   default = {
+#     "public-1" = {
+#       name        = "public-1"
+#       zone        = "ru-central1-a"
+#       cidr = ["192.168.10.0/24"]
+#       description = "Публичная подсеть"
+#     }
+#     "public-2" = {
+#       name        = "public-2"
+#       zone        = "ru-central1-b"
+#       cidr = ["192.168.20.0/24"]
+#       description = "Публичная подсеть"
+#     }
+#     "public-3" = {
+#       name        = "public-3"
+#       zone        = "ru-central1-d"
+#       cidr = ["192.168.30.0/24"]
+#       description = "Публичная подсеть"
+#     }
+#   }
+# }
+#
+variable "alb-public-ip-zone" {
   type        = string
   default     = "ru-central1-a"
 }
 
-######################### переменные VM и NAT ###############################################
-variable "imageVM" {
+######################### Переменные создаваемых VM ###############################################
+# Проект AppWebBack
+variable "image_vm" {
   type            = string
   default         = "ubuntu-2204-lts"
-  description     = "Образ операционной системы для NAT"
+  description     = "Образ операционной системы"
 }
 
-variable "imageNAT" {
-  type            = string
-  default         = "fd80mrhj8fl2oe87o4e1"
-  description     = "Образ операционной системы для NAT"
-}
-
-variable "platformVM" {
+variable "platform_vm" {
   type            = string
   default         = "standard-v3"
   description     = "Тип создаваемой виртуальной машины"
 }
 
-variable "resourcesVM" {
+variable "resources_vm" {
   type = object(
     {
       cores           = number
@@ -111,46 +147,114 @@ variable "resourcesVM" {
   description = "Ресурсы для создания виртуальных машин (одинаковые для всех машин)"
 }
 
-variable "settingsVM" {
-  description = "Перечень настроек для vm, где public - использовать ли NAT"
+variable "settings_vm" {
+  description = "Перечень настроек для vm"
   type = map(object({
-    nat         = bool
     zone        = string
     subnet      = string
-    ipaddress   = string
+    local_ip    = string
+    public_ip   = bool
   }))
   default = {
     "front" = {
-      nat         = false
       zone        = "ru-central1-a"
-      subnet      = "public-1"
-      ipaddress   = "192.168.10.11"
+      subnet      = "app-private-a"
+      local_ip    = "192.168.110.11"
+      public_ip   = false
     },
     "back" = {
-      nat         = false
       zone        = "ru-central1-b"
-      subnet      = "private-1"
-      ipaddress   = "192.168.110.12"
+      subnet      = "app-private-b"
+      local_ip    = "192.168.120.11"
+      public_ip   = false
     }
   }
 }
 
-variable "settingsVmNAT" {
+variable "image_nat" {
+  type            = string
+  default         = "fd80mrhj8fl2oe87o4e1"
+  description     = "Образ операционной системы для NAT"
+}
+
+variable "settings_nat" {
   description = "Перечень настроек для vm nat"
   type = object({
-    nat         = bool
-    name      = string
-    zone      = string
-    subnet    = string
-    ipaddress = string
+    name        = string
+    zone        = string
+    subnet      = string
+    local_ip    = string
+    public_ip   = bool
   })
   default = {
     name        = "nat"
     zone        = "ru-central1-a"
-    subnet      = "public-1"
-    ipaddress   = "192.168.10.254"
-    nat         = true
+    subnet      = "app-public-a"
+    local_ip    = "192.168.10.254"
+    public_ip   = true
   }
+}
+
+####################### Переменные для групп безопасности #############################################
+variable "rules-app-web-back-ingress" {
+  description = "Перечень входящих правил для групп безопасности"
+  type = list(object({
+    description     = string
+    protocol        = string
+    from_port       = optional(number)
+    to_port         = optional(number)
+    v4_cidr_blocks  = list(string)
+  }))
+  default = [
+    {
+      description     = "Разрешить SSH",
+      protocol        = "TCP",
+      from_port       = 22,
+      to_port         = 22,
+      v4_cidr_blocks  = ["192.168.10.254/32"]
+    },
+    {
+      description     = "Разрешить ping из внутренней сети",
+      protocol        = "ICMP",
+      from_port       = null,
+      to_port         = null,
+      v4_cidr_blocks  = ["192.168.10.0/24"]
+    },
+    {
+      description     = "Разрешить HTTP",
+      protocol        = "TCP",
+      from_port       = 80,
+      to_port         = 80,
+      v4_cidr_blocks  = ["0.0.0.0/24"]
+    }
+  ]
+}
+
+variable "rules-app-web-back-egress" {
+  description = "Перечень исходящих правил для групп безопасности"
+  type = list(object({
+    description     = string
+    protocol        = string
+    from_port       = optional(number)
+    to_port         = optional(number)
+    v4_cidr_blocks  = list(string)
+  }))
+  default = [
+    {
+      description     = "Разрешить HTTPS",
+      protocol        = "TCP",
+      from_port       = 443,
+      to_port         = 443,
+      v4_cidr_blocks  = ["0.0.0.0/0"]
+    },
+    {
+      description     = "Разрешить HTTP",
+      protocol        = "TCP",
+      from_port       = 80,
+      to_port         = 80,
+      v4_cidr_blocks  = ["0.0.0.0/0"]
+    }
+  ]
 }
 
 ######################### переменные для object storage ###############################################
@@ -185,7 +289,7 @@ variable "bucket_image_path" {
   description = "Путь к локальному файлу, который нужно загрузить"
 }
 
-######################### Переменные для группы VM ###############################################
+######################### Переменные для группы VM LAMP###############################################
 variable "group_vm_name" {
   type        = string
   default     = "group-vm"
@@ -218,6 +322,12 @@ variable "group_vm_net" {
   type        = bool
   default     = false
   description = "Использовать ли NAT"
+}
+
+variable "group_vm_lamp_subnet" {
+  type      = string
+  default   = "lamp-private-a"
+  description = "Подсеть где располагается LAMP"
 }
 
 variable "group_image_id" {

@@ -3,21 +3,42 @@ output "имя_сети" {
   value = yandex_vpc_network.vpc.name
 }
 
-# Вывод подсетей
-output "созданные_подсети" {
-  value = [
-    for item in local.flattened_subnets: item.name
-  ]
+output "flattened_subnets_map" {
+  value = local.flattened_subnets_map
 }
 
-# Вывод информации о созданных виртуальных машинах
-output "имена_виртуальных_машин" {
-  description = "Список имен созданных виртуальных машин."
-  value = [
-    for item in yandex_compute_instance.app-web-back: item.name
-  ]
+output "flattened_subnets" {
+  value = local.flattened_subnets
 }
 
+# output "имя_подсети" {
+#   # value = yandex_vpc_subnet.subnet["subnet-project-1"].name
+#   value = yandex_vpc_subnet.subnet["subnet-project-1"].name
+# }
+
+
+
+# # Вывод созданных подсетей
+# output "созданные_подсети" {
+#   description = "Созданные подсети"
+#   value = {
+#     public_subnets = [
+#       for k, v in yandex_vpc_subnet.subnet-public : {
+#         name = v.name
+#         cidr = v.v4_cidr_blocks
+#         zone = v.zone
+#       }
+#     ]
+#     private_subnets = [
+#       for k, v in yandex_vpc_subnet.subnet-private : {
+#         name  = v.name
+#         cidr  = v.v4_cidr_blocks
+#         zone  = v.zone
+#       }
+#     ]
+#   }
+# }
+#
 # output "внешний_ip_адресс_кластера_k8s" {
 #   value = yandex_kubernetes_cluster.k8s_cluster.master[0].external_v4_address
 # }
