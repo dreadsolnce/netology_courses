@@ -26,16 +26,34 @@
 #     #   zone = var.subnets-public["public-3"].zone
 #     #   subnet_id = yandex_vpc_subnet.subnet-public["public-3"].id
 #     # }
-#    public_ip = true
-#  }
-#  kms_provider {
-#    key_id = yandex_kms_symmetric_key.kms-key.id
-#  }
-#
-#  service_account_id = yandex_iam_service_account.service-account.id
-#  node_service_account_id = yandex_iam_service_account.service-account.id
-#
-#  depends_on = [
-#    yandex_iam_service_account.service-account,
-#  ]
-#}
+    public_ip = true
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ kms_provider {
+    key_id = yandex_kms_symmetric_key.kms-key.id
+  }
+
+  service_account_id = yandex_iam_service_account.service-account.id
+  node_service_account_id = yandex_iam_service_account.service-account.id
+
+  depends_on = [
+    yandex_iam_service_account.service-account,
+  ]
+}

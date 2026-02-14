@@ -48,12 +48,37 @@ variable "subnets" {
       }
     },
     "app_lamp" = {
+      "subnet-public-a" = {
+        name        = "lamp-public-a"
+        zone        = "ru-central1-a"
+        cidr        = ["192.168.30.0/24"]
+        description = "Публичная подсеть для проекта AppWebBack в зоне a"
+      },
       "subnet-private-a" = {
         name        = "lamp-private-a"
         zone        = "ru-central1-a"
         cidr        = ["192.168.130.0/24"]
         description = "Приватная подсеть для проекта Lamp в зоне a"
       }
+#    "k8s" = {
+#      "subnet-public-a" = {
+#        name        = "k8s-public-a"
+#        zone        = "ru-central1-a"
+#        cidr        = ["192.168.40.0/24"]
+#        description = "Публичная подсеть для проекта k8s в зоне a"
+#      },
+#      "subnet-public-b" = {
+#        name        = "k8s-public-b"
+#        zone        = "ru-central1-b"
+#        cidr        = ["192.168.50.0/24"]
+#        description = "Публичная подсеть для проекта k8s в зоне b"
+#      },
+#      "subnet-public-d" = {
+#        name        = "k8s-public-d"
+#        zone        = "ru-central1-d"
+#        cidr        = ["192.168.60.0/24"]
+#        description = "Публичная подсеть для проекта k8s в зоне d"
+#      }
     }
   }
 }
@@ -225,7 +250,7 @@ variable "rules-app-web-back-ingress" {
       protocol        = "TCP",
       from_port       = 80,
       to_port         = 80,
-      v4_cidr_blocks  = ["0.0.0.0/24"]
+      v4_cidr_blocks  = ["0.0.0.0/0"]
     }
   ]
 }
