@@ -20,8 +20,8 @@ variable "vpc_name" {
 variable "subnets" {
   description = "Перечень подсетей где ключ имя проекта (на него можно ссылаться в коде), значение словарь"
   type = map(map(object({
-    name = string
-    zone = string
+    name        = string
+    zone        = string
     cidr = list(string)
     description = string
   })))
@@ -31,19 +31,19 @@ variable "subnets" {
       "subnet-public-a" = {
         name        = "app-public-a"
         zone        = "ru-central1-a"
-        cidr        = ["192.168.10.0/24"]
+        cidr = ["192.168.10.0/24"]
         description = "Публичная подсеть для проекта AppWebBack в зоне a"
       },
       "subnet-private-a" = {
         name        = "app-private-a"
         zone        = "ru-central1-a"
-        cidr        = ["192.168.110.0/24"]
+        cidr = ["192.168.110.0/24"]
         description = "Приватная подсеть для проекта AppWebBack в зоне a"
       },
       "subnet-private-b" = {
         name        = "app-private-b"
         zone        = "ru-central1-b"
-        cidr        = ["192.168.120.0/24"]
+        cidr = ["192.168.120.0/24"]
         description = "Приватная подсеть для проекта AppWebBack в зоне b"
       }
     },
@@ -51,92 +51,99 @@ variable "subnets" {
       "subnet-public-a" = {
         name        = "lamp-public-a"
         zone        = "ru-central1-a"
-        cidr        = ["192.168.30.0/24"]
+        cidr = ["192.168.30.0/24"]
         description = "Публичная подсеть для проекта AppWebBack в зоне a"
       },
       "subnet-private-a" = {
         name        = "lamp-private-a"
         zone        = "ru-central1-a"
-        cidr        = ["192.168.130.0/24"]
+        cidr = ["192.168.130.0/24"]
         description = "Приватная подсеть для проекта Lamp в зоне a"
       }
-#    "k8s" = {
-#      "subnet-public-a" = {
-#        name        = "k8s-public-a"
-#        zone        = "ru-central1-a"
-#        cidr        = ["192.168.40.0/24"]
-#        description = "Публичная подсеть для проекта k8s в зоне a"
-#      },
-#      "subnet-public-b" = {
-#        name        = "k8s-public-b"
-#        zone        = "ru-central1-b"
-#        cidr        = ["192.168.50.0/24"]
-#        description = "Публичная подсеть для проекта k8s в зоне b"
-#      },
-#      "subnet-public-d" = {
-#        name        = "k8s-public-d"
-#        zone        = "ru-central1-d"
-#        cidr        = ["192.168.60.0/24"]
-#        description = "Публичная подсеть для проекта k8s в зоне d"
-#      }
+    }
+    "k8s" = {
+      "subnet-public-a" = {
+        name        = "k8s-public-a"
+        zone        = "ru-central1-a"
+        cidr = ["192.168.40.0/24"]
+        description = "Публичная подсеть для проекта k8s в зоне a"
+      },
+      "subnet-public-b" = {
+        name        = "k8s-public-b"
+        zone        = "ru-central1-b"
+        cidr = ["192.168.50.0/24"]
+        description = "Публичная подсеть для проекта k8s в зоне b"
+      },
+      "subnet-public-d" = {
+        name        = "k8s-public-d"
+        zone        = "ru-central1-d"
+        cidr = ["192.168.60.0/24"]
+        description = "Публичная подсеть для проекта k8s в зоне d"
+      },
+      "subnet-private-a" = {
+        name        = "k8s-private-a"
+        zone        = "ru-central1-a"
+        cidr = ["192.168.140.0/24"]
+        description = "Приватная подсеть для проекта k8s в зоне a"
+      }
     }
   }
 }
+  # variable "subnets-private" {
+  #   description = "Перечень приватных подсетей где ключ имя подсети, значение словарь"
+  #   type = map(object({
+  #     name = string
+  #     zone = string
+  #     cidr = list(string)
+  #     description = string
+  #   }))
+  #   default = {
+  #     "private-1" = {
+  #       name = "private-1"
+  #       zone = "ru-central1-a"
+  #       cidr = ["192.168.110.0/24"]
+  #       description  = "Приватная подсеть"
+  #     },
+  #     "private-2" = {
+  #       name = "private-2"
+  #       zone = "ru-central1-b"
+  #       cidr = ["192.168.120.0/24"]
+  #       description  = "Приватная подсеть"
+  #     }
+  #   }
+  # }
+  #
+  # variable "subnets-public" {
+  #   description = "Перечень публичных подсетей где ключ имя подсети, значение словарь"
+  #   type = map(object({
+  #     name        = string
+  #     zone        = string
+  #     cidr = list(string)
+  #     description = string
+  #   }))
+  #   default = {
+  #     "public-1" = {
+  #       name        = "public-1"
+  #       zone        = "ru-central1-a"
+  #       cidr = ["192.168.10.0/24"]
+  #       description = "Публичная подсеть"
+  #     }
+  #     "public-2" = {
+  #       name        = "public-2"
+  #       zone        = "ru-central1-b"
+  #       cidr = ["192.168.20.0/24"]
+  #       description = "Публичная подсеть"
+  #     }
+  #     "public-3" = {
+  #       name        = "public-3"
+  #       zone        = "ru-central1-d"
+  #       cidr = ["192.168.30.0/24"]
+  #       description = "Публичная подсеть"
+  #     }
+  #   }
+  # }
+  #
 
-# variable "subnets-private" {
-#   description = "Перечень приватных подсетей где ключ имя подсети, значение словарь"
-#   type = map(object({
-#     name = string
-#     zone = string
-#     cidr = list(string)
-#     description = string
-#   }))
-#   default = {
-#     "private-1" = {
-#       name = "private-1"
-#       zone = "ru-central1-a"
-#       cidr = ["192.168.110.0/24"]
-#       description  = "Приватная подсеть"
-#     },
-#     "private-2" = {
-#       name = "private-2"
-#       zone = "ru-central1-b"
-#       cidr = ["192.168.120.0/24"]
-#       description  = "Приватная подсеть"
-#     }
-#   }
-# }
-#
-# variable "subnets-public" {
-#   description = "Перечень публичных подсетей где ключ имя подсети, значение словарь"
-#   type = map(object({
-#     name        = string
-#     zone        = string
-#     cidr = list(string)
-#     description = string
-#   }))
-#   default = {
-#     "public-1" = {
-#       name        = "public-1"
-#       zone        = "ru-central1-a"
-#       cidr = ["192.168.10.0/24"]
-#       description = "Публичная подсеть"
-#     }
-#     "public-2" = {
-#       name        = "public-2"
-#       zone        = "ru-central1-b"
-#       cidr = ["192.168.20.0/24"]
-#       description = "Публичная подсеть"
-#     }
-#     "public-3" = {
-#       name        = "public-3"
-#       zone        = "ru-central1-d"
-#       cidr = ["192.168.30.0/24"]
-#       description = "Публичная подсеть"
-#     }
-#   }
-# }
-#
 variable "alb-public-ip-zone" {
   type        = string
   default     = "ru-central1-a"

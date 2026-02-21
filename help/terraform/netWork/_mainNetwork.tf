@@ -26,8 +26,9 @@ locals {
   ])
 }
 
+
 resource  "yandex_vpc_subnet" "subnet" {
-  for_each = { for k in local.flattened_subnets: k.name => k  }
+  for_each = { for k in local.flattened_subnets: k.name => k if strcontains(k.name, "k8s")  }
   network_id     = yandex_vpc_network.vpc.id
   name           = each.key
   zone           = each.value.zone

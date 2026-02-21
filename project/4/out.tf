@@ -18,18 +18,18 @@ output "имена_виртуальных_машин" {
   ]
 }
 
-# output "внешний_ip_адресс_кластера_k8s" {
-#   value = yandex_kubernetes_cluster.k8s_cluster.master[0].external_v4_address
-# }
-#
-# output "fqdn_имя_кластера_MySQL" {
-#   value = yandex_mdb_mysql_cluster.mysql-cluster.host[*].fqdn
-# }
-# output "fileUrl" {
-#   value = {
-#     Ссылка_на_файл = "https://storage.yandexcloud.net/${yandex_storage_bucket.bucket-image.bucket}/${yandex_storage_object.picture.key}"
-#   }
-# }
+output "внешний_ip_адресс_кластера_k8s" {
+  value = yandex_kubernetes_cluster.k8s_cluster.master[0].external_v4_address
+}
+
+output "fqdn_имя_кластера_MySQL" {
+  value = yandex_mdb_mysql_cluster.mysql-cluster.host[*].fqdn
+}
+output "fileUrl" {
+  value = {
+    Ссылка_на_файл = "https://storage.yandexcloud.net/${yandex_storage_bucket.bucket-image.bucket}/${yandex_storage_object.picture.key}"
+  }
+}
 #
 # output "Имена_VM_в_группе" {
 #   description = "Список имен виртуальных машин в группе."

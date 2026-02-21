@@ -45,15 +45,35 @@ variable "subnets" {
       "subnet-project-2-public-a" = {
         name        = "public-project-2-a"
         zone        = "ru-central1-a"
-        cidr        = ["192.168.20.0/24"]
+        cidr = ["192.168.20.0/24"]
         description = "Публичная подсеть для проекта 2 в зоне a"
       },
       "subnet-project-2-private-a" = {
         name        = "private-project-2-a"
         zone        = "ru-central1-a"
-        cidr        = ["192.168.120.0/24"]
+        cidr = ["192.168.120.0/24"]
         description = "Приватная подсеть для проекта 2 в зоне a"
       }
+    },
+    "k8s" = {
+       "subnet-public-a" = {
+         name        = "k8s-public-a"
+         zone        = "ru-central1-a"
+         cidr        = ["192.168.40.0/24"]
+         description = "Публичная подсеть для проекта k8s в зоне a"
+       },
+       "subnet-public-b" = {
+         name        = "k8s-public-b"
+         zone        = "ru-central1-b"
+         cidr        = ["192.168.50.0/24"]
+         description = "Публичная подсеть для проекта k8s в зоне b"
+       },
+       "subnet-public-d" = {
+         name        = "k8s-public-d"
+         zone        = "ru-central1-d"
+         cidr        = ["192.168.60.0/24"]
+         description = "Публичная подсеть для проекта k8s в зоне d"
+       }
     }
   }
 }

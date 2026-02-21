@@ -22,7 +22,7 @@ spec:
         - containerPort: 80
         env:
         - name: PMA_HOST
-          value: "rc1a-krq7mrent4kb2694.mdb.yandexcloud.net" # Адрес вашего MySQL сервиса
+          value: "rc1a-jhtp2aktt3ks6pqb.mdb.yandexcloud.net" # Адрес вашего MySQL сервиса
         - name: MYSQL_USERNAME
           value: "test"
         - name: MYSQL_PASSWORD
