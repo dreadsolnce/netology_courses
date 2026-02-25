@@ -13,22 +13,30 @@ terraform {
     }
   }
 
-  backend "s3" {
-    endpoints = {
-      # База данных для хранения блокировок (делается отдельно)
-      dynamodb = "https://docapi.serverless.yandexcloud.net/ru-central1/b1gr160bk1vuruuer3om/etni35t4ancu2nbjn6bq"
-      # Хранение файла terraform.tfstate
-      s3 = "https://storage.yandexcloud.net"
-    }
+#  backend "s3" {
+#    endpoints = {
+#      # База данных для хранения блокировок (делается отдельно)
+#      dynamodb = "https://docapi.serverless.yandexcloud.net/ru-central1/b1gr160bk1vuruuer3om/etnerhbmnj4ih7t0o0mv"
+#      # Хранение файла terraform.tfstate
+#      s3 = "https://storage.yandexcloud.net"
+#    }
 
-    shared_credentials_files = ["~/.aws/credentials-diplom"]
-    region  = "ru-central1"
+#    shared_credentials_files = ["~/.aws/key"]
+#    region  = "ru-central1"
 
-    skip_region_validation      = true
-    skip_credentials_validation = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
+
+#    dynamodb_table = "tstate-lock-table"
+#
+#    profile = "default"
+#
+#    bucket = "tfstate-b1gdmpusv51ippn2psip"
+#    key    = "terraform.tfstate"
+
+#    skip_region_validation      = true
+#    skip_credentials_validation = true
+#    skip_requesting_account_id  = true
+#    skip_s3_checksum            = true
+#  }
 }
 
 provider "yandex" {
