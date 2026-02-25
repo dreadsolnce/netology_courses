@@ -85,7 +85,7 @@ variable "resources_master_nodes" {
   default = {
     cores             = 2
     memory            = 4
-    core_fraction     = 50
+    core_fraction     = 100
   }
   description = "Ресурсы для создания виртуальных машин (одинаковые для всех машин)"
 }
