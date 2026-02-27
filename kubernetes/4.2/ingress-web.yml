@@ -17,37 +17,37 @@ spec:
             name: service-web-front
             port:
               number: 80
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: service-web-back
-            port:
-              number: 80
-  - host: "app2.test.com"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: service-web-back
-            port:
-              number: 80
-  - host: "netology.webhop.me"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: service-web-front
-            port:
-              number: 80
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: service-web-back
-            port:
-              number: 80
+#      - path: /api
+#        pathType: Prefix
+#        backend:
+#          service:
+#            name: service-web-back
+#            port:
+#              number: 80
+#  - host: "app2.test.com"
+#    http:
+#      paths:
+#      - path: /
+#        pathType: Prefix
+#        backend:
+#          service:
+#            name: service-web-back
+#            port:
+#              number: 80
+#  - host: "netology.webhop.me"
+#    http:
+#      paths:
+#      - path: /
+#        pathType: Prefix
+#        backend:
+#          service:
+#            name: service-web-front
+#            port:
+#              number: 80
+#      - path: /api
+#        pathType: Prefix
+#        backend:
+#          service:
+#            name: service-web-back
+#            port:
+#              number: 80

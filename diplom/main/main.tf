@@ -37,14 +37,20 @@ resource "yandex_compute_instance" "master-node" {
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.image.image_id
+      size     = 50 # Размер в ГБ
+      type     = "network-hdd"
     }
   }
 
   network_interface {
-    # subnet_id              = yandex_vpc_subnet.subnet[each.value.subnet].id
     subnet_id = yandex_vpc_subnet.sunbets[split("-", each.value.zone)[2]].id
     nat                    = each.value.nat
     ip_address             = each.value.ipaddress
+  }
+
+  # Прерываемая машина
+  scheduling_policy {
+    preemptible = true
   }
 
   metadata = {
@@ -57,6 +63,7 @@ resource "yandex_compute_instance" "master-node" {
 resource "local_file" "hosts_templatefile" {
   content = templatefile("${path.module}/hosts.tftpl",
     {
+      # count       = length(yandex_compute_instance.master-node)
       master-node = yandex_compute_instance.master-node
     }
   )

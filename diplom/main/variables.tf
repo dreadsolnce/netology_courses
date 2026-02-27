@@ -83,8 +83,8 @@ variable "resources_master_nodes" {
     }
   )
   default = {
-    cores             = 2
-    memory            = 4
+    cores             = 4
+    memory            = 8
     core_fraction     = 100
   }
   description = "Ресурсы для создания виртуальных машин (одинаковые для всех машин)"
@@ -113,6 +113,5 @@ variable "settings_master_node" {
       zone        = "ru-central1-d"
       ipaddress   = "192.168.3.33"
     }
-
   }
 }

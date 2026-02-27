@@ -1,39 +1,7 @@
-git clone https://github.com/kubernetes-sigs/kubespray
-cd kubespray/
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
+kubectl get svc -n monitoring
+kubectl -n monitoring port-forward services/grafana --address 0.0.0.0 3000:3000
+kubectl taint nodes node1 key1=value1:NoSchedule-
+kubectl describe node <имя-узла> | grep Taints
 
-cp ../hosts.ini kubespray/inventory/sample/inventory.ini
-ansible-playbook -i inventory/sample/inventory.ini --become --user ubuntu -e "ansible_ssh_private_key_file=~/.ssh/id_rsa" cluster.yml
 
-https://itzm.tech/p/k8s/
-
-[all]
-
-master1   ansible_host=93.77.184.3     ip=192.168.1.11   fqdn=master1.ru-central1.internal
-
-master2   ansible_host=84.252.143.91   ip=192.168.2.22   fqdn=master2.ru-central1.internal
-
-master3   ansible_host=158.160.188.199 ip=192.168.3.33   fqdn=master3.ru-central1.internal
-
-[kube-master]
-master1
-master2
-master3
-
-[etcd]
-master1
-master2
-master3
-
-[k8s-cluster:children]
-kube-master
-kube-node
-
-[all:vars]
-ansible_user=ubuntu
-ansible_become=true
-ansible_python_interpreter=/usr/bin/python3
 
