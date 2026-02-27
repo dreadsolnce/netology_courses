@@ -4,4 +4,19 @@ kubectl taint nodes node1 key1=value1:NoSchedule-
 kubectl describe node <имя-узла> | grep Taints
 
 
+как установить Cloud Controller Manager (CCM)
 
+sudo apt update && sudo apt install jq
+
+cat sa-key.json | helm registry login cr.yandex --username 'json_key' --password-stdin && \
+helm pull oci://cr.yandex/yc-marketplace/yandex-cloud/yc-alb-ingress/yc-alb-ingress-controller-chart \
+  --version v0.2.26 \
+  --untar && \
+helm install \
+  --namespace <пространство_имен> \
+  --create-namespace \
+  --set folderId=<идентификатор_каталога> \
+  --set clusterId=<идентификатор_кластера> \
+  --set enableDefaultHealthChecks=<true_или_false> \
+  --set-file saKeySecretKey=sa-key.json \
+  yc-alb-ingress-controller ./yc-alb-ingress-controller-chart/
