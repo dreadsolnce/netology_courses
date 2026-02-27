@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-service
+            port:
+              number: 80
+
+# 1. Установите NGINX Ingress Controller.
+# 2. Настройте его сервис как NodePort или LoadBalancer.
+# 3. Создайте ресурс Ingress:
