@@ -52,7 +52,12 @@ resource "yandex_compute_instance" "bastion" {
   metadata = {
     serial-port-enable = 1
     # Через файл открытого ключа pub на локальной машине
-    ssh-keys           = "ubuntu:${local.ssh_pub_key}"
+    ssh-keys            = <<EOT
+      "ubuntu:${local.ssh_pub_key}"
+      "ubuntu:${local.ssh_pub_key_bastion}"
+      "ubuntu:${local.ssh_priv_key_bastion}"
+    EOT
+    
     # Установка дополнительного ПО
     user-data          = data.template_file.cloudinit-bastion.rendered
   }
@@ -122,8 +127,10 @@ resource "yandex_compute_instance" "master-node" {
 
   metadata = {
     serial-port-enable  = 1
-    ssh-keys            = "ubuntu:${local.ssh_pub_key}"    # Через файл открытого ключа pub на локальной машине
-
+    ssh-keys            = <<EOT
+      "ubuntu:${local.ssh_pub_key}"    # Через файл открытого ключа pub на локальной машине
+      "ubuntu:${local.ssh_pub_key_bastion}"
+    EOT
     # user-data          = data.template_file.cloudinit-node.rendered
   }
 }
