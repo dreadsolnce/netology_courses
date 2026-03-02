@@ -57,9 +57,65 @@ variable "subnets" {
       zone         = "ru-central1-d"
       cidr         = "192.168.3.0/24"
     }
+    "public" = {
+      zone         = "ru-central1-a"
+      cidr         = "192.168.4.0/24"
+    }
   }
   description = "Используемые подсети в проекте"
 }
+
+######################## переменные для vm bastion #######################################################
+variable "image_bastion" {
+  type            = string
+  # default         = "fd80mrhj8fl2oe87o4e1"
+  default         = "fd8g9ua2q01c2qvigpmb"
+  description     = "Образ операционной системы для BASTION"
+}
+
+variable "resources_bastion" {
+  type = object(
+    {
+      cores           = number
+      memory          = number
+      core_fraction   = number
+      disk_size       = number
+    }
+  )
+  default = {
+    cores             = 2
+    memory            = 2
+    core_fraction     = 50
+    disk_size         = 15
+  }
+  description = "Ресурсы для vm бастион"
+}
+
+variable "settings_bastion" {
+  description = "Перечень настроек для vm nat"
+  type = object({
+    hostname    = string
+    zone        = string
+    # subnet      = string
+    ipaddress   = string
+    nat         = bool
+  })
+  default = {
+    hostname        = "bastion"
+    zone            = "ru-central1-a"
+    # subnet      = "public"
+    ipaddress       = "192.168.4.144"
+    nat             = true
+  }
+}
+
+#####################Переменные cloud-init##################################
+variable "packages" {
+    type        = list(string)
+    default     = [ "htop", "tmux", "net-tools", "mc", "vim", "nginx", "ansible", "git", "python3-venv", "libssl-dev", "liblzma-dev", "python3-tk", "libsqlite3-dev", "libreadline-dev", "libffi-dev", "libncurses5-dev", "libncursesw5-dev", "libbz2-dev", "build-essential", "gcc", "python3-pip" ]
+    description = "Устанавливаемые пакеты по умолчанию"
+}
+
 
 ######################## переменные для мастер нод кластера ##############################################
 variable "image" {
@@ -80,12 +136,14 @@ variable "resources_master_nodes" {
       cores           = number
       memory          = number
       core_fraction   = number
+      disk_size       = number
     }
   )
   default = {
-    cores             = 4
-    memory            = 8
+    cores             = 2
+    memory            = 4
     core_fraction     = 100
+    disk_size         = 15
   }
   description = "Ресурсы для создания виртуальных машин (одинаковые для всех машин)"
 }
@@ -99,17 +157,17 @@ variable "settings_master_node" {
   }))
   default = {
     "master1" = {
-      nat         = true
+      nat         = false
       zone        = "ru-central1-a"
       ipaddress   = "192.168.1.11"
     },
     "master2" = {
-      nat         = true
+      nat         = false
       zone        = "ru-central1-b"
       ipaddress   = "192.168.2.22"
     }
     "master3" = {
-      nat         = true
+      nat         = false
       zone        = "ru-central1-d"
       ipaddress   = "192.168.3.33"
     }

@@ -1,0 +1,34 @@
+#cloud-config
+users:
+  - name: ubuntu
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+package_update: true
+package_upgrade: false
+
+packages: ${packages}
+
+# Копирование конфигурационного файла nginx (обратный прокси). Используем кодировку для передачи файла, т.к. даные содержат спец символы в виде :, а он корректно не передается
+write_files:
+  - path: /etc/nginx/sites-enabled/proxy
+    permissions: '0644'
+    encoding: b64
+    content: ${base64encode(file_content)}
+  - path: /home/ubuntu/hosts.ini
+    permissions: '0644'
+    encoding: b64
+    content: ${base64encode(file_ansible_hosts)}
+  - path: /home/ubuntu/kubespray.sh
+    permissions: '0777'
+    encoding: b64
+    content: ${file_kubespray}
+  - path: /home/ubuntu/addons.yml
+    permissions: '0644'
+    encoding: b64
+    content: ${file_addons}
+
+runcmd:
+  - cat /etc/hosts

@@ -3,6 +3,8 @@ kubectl -n monitoring port-forward services/grafana --address 0.0.0.0 3000:3000
 kubectl taint nodes node1 key1=value1:NoSchedule-
 kubectl describe node <имя-узла> | grep Taints
 
+ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" -C "bastion@example.com"
+
 
 как установить Cloud Controller Manager (CCM)
 
