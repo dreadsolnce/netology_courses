@@ -7,15 +7,20 @@ resource "yandex_vpc_network" "vpc" {
 resource "yandex_vpc_subnet" "sunbets" {
   for_each = var.subnets
 
-  name = "subnet-${each.key}"
-  zone = each.value.zone
-  network_id = yandex_vpc_network.vpc.id
-  v4_cidr_blocks = [each.value.cidr]
-  # route_table_id = yandex_vpc_route_table.rt.id
-  route_table_id = each.key != "public" ? yandex_vpc_route_table.rt.id : null
+  name            = "subnet-${each.key}"
+  zone            = each.value.zone
+  network_id      = yandex_vpc_network.vpc.id
+  v4_cidr_blocks  = [each.value.cidr]
+  route_table_id  = each.key != "public" ? yandex_vpc_route_table.rt.id : null
 }
 
-# Создание vm бастион, который будет обратным прокси (nginx) - единственная точка входа, а также будет шлюзом для доступа vm в облачную сеть
+# Создание ключей ssh для доступа из bastion до vm
+resource "tls_private_key" "key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+# Создание VM БАСТИОН, который будет обратным прокси (nginx) - единственная точка входа, а также будет шлюзом для доступа vm в облачную сеть
 resource "yandex_compute_instance" "bastion" {
   name        = var.settings_bastion.hostname
   hostname    = var.settings_bastion.hostname
@@ -39,9 +44,9 @@ resource "yandex_compute_instance" "bastion" {
   }
 
   network_interface {
-    subnet_id = yandex_vpc_subnet.sunbets["public"].id
-    nat                    = var.settings_bastion.nat
-    ip_address             = var.settings_bastion.ipaddress
+    subnet_id               = yandex_vpc_subnet.sunbets["public"].id
+    nat                     = var.settings_bastion.nat
+    ip_address              = var.settings_bastion.ipaddress
   }
 
   # Прерываемая машина
@@ -50,18 +55,11 @@ resource "yandex_compute_instance" "bastion" {
   }
 
   metadata = {
-    serial-port-enable = 1
-    # Через файл открытого ключа pub на локальной машине
-    ssh-keys            = <<EOT
-      "ubuntu:${local.ssh_pub_key}"
-      "ubuntu:${local.ssh_pub_key_bastion}"
-      "ubuntu:${local.ssh_priv_key_bastion}"
-    EOT
-    
-    # Установка дополнительного ПО
-    user-data          = data.template_file.cloudinit-bastion.rendered
+    serial-port-enable  = 1
+    ssh-keys            = "ubuntu:${local.ssh_pub_key}"                   # Через файл открытого ключа pub на локальной машине
+    user-data           = data.template_file.cloudinit-bastion.rendered   # Установка дополнительного ПО
   }
-
+  # Создается только после того как создадутся мастер ноды
   depends_on = [
     yandex_compute_instance.master-node
   ]
@@ -70,20 +68,22 @@ resource "yandex_compute_instance" "bastion" {
 # Настройки для vm бастион
 data "template_file" "cloudinit-bastion" {
   template = file("./cloud-init-bastion.yml")
+  # Переменные
   vars = {
-    ssh_public_key = local.ssh_pub_key
-    packages = jsonencode(var.packages)
-    file_content = templatefile("${path.module}/proxy.tftpl", {
-        master-node = local.sorted_list_master_node
+    ssh_public_key      = local.ssh_pub_key
+    ssh_private_key     = tls_private_key.key.private_key_pem
+    packages            = jsonencode(var.packages)
+    file_content        = templatefile("${path.module}/proxy.tftpl", {
+        master-node     = local.sorted_list_master_node
     })
-    file_ansible_hosts = templatefile("${path.module}/hosts.tftpl", {
-        master-node = local.sorted_list_master_node
+    file_ansible_hosts  = templatefile("${path.module}/hosts.tftpl", {
+        master-node     = local.sorted_list_master_node
     })
-    file_kubespray = filebase64("${path.module}/kubespray.sh")
-    file_addons    = filebase64("${path.module}/addons.yml")
+    file_kubespray      = filebase64("${abspath(path.module)}/conf/kubespray/kubespray.sh")
+    file_addons         = filebase64("${abspath(path.module)}/conf/kubespray/addons.yml")
+    file_prometheus     = filebase64("${abspath(path.module)}/conf/kube-prometheus/kube-prometheus.sh")
   }
 }
-
 
 # Создание трех vm для мастер нод кластера
 data "yandex_compute_image" "image" {
@@ -108,16 +108,16 @@ resource "yandex_compute_instance" "master-node" {
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.image.image_id
-      size     = 15 # Размер в ГБ
-      type     = "network-hdd"
+      image_id  = data.yandex_compute_image.image.image_id
+      size      = 15 # Размер в ГБ
+      type      = "network-hdd"
     }
   }
 
   network_interface {
-    subnet_id = yandex_vpc_subnet.sunbets[split("-", each.value.zone)[2]].id
-    nat                    = each.value.nat
-    ip_address             = each.value.ipaddress
+    subnet_id               = yandex_vpc_subnet.sunbets[split("-", each.value.zone)[2]].id
+    nat                     = each.value.nat
+    ip_address              = each.value.ipaddress
   }
 
   # Прерываемая машина
@@ -126,38 +126,29 @@ resource "yandex_compute_instance" "master-node" {
   }
 
   metadata = {
+    # Доступ через файлы открытых ключей: локальная машина и VM БАСТИОН
     serial-port-enable  = 1
-    ssh-keys            = <<EOT
-      "ubuntu:${local.ssh_pub_key}"    # Через файл открытого ключа pub на локальной машине
-      "ubuntu:${local.ssh_pub_key_bastion}"
-    EOT
-    # user-data          = data.template_file.cloudinit-node.rendered
+    ssh-keys            = "ubuntu:${trimspace(local.ssh_pub_key)}"
+    user-data           = data.template_file.cloudinit-vm.rendered
   }
 }
 
-# data "template_file" "cloudinit-node" {
-#   template = file("./cloud-init-node.yml")
-#   vars = {
-#     ssh_public_key = local.ssh_pub_key
-#     packages = jsonencode(var.packages)
-#     file_content = templatefile("${path.module}/proxy.tftpl", {
-#         master-node = local.sorted_list_master_node
-#     })
-#     file_ansible_hosts = templatefile("${path.module}/hosts.tftpl", {
-#         master-node = local.sorted_list_master_node
-#     })
-#     file_kubespray = filebase64("${path.module}/kubespray.sh")
-#     file_addons    = filebase64("${path.module}/addons.yml")
-#   }
-# }
+data "template_file" "cloudinit-vm" {
+  template                  = file("./cloud-init-vm.yml")
+  # Переменные
+  vars = {
+    ssh_public_key          = local.ssh_pub_key
+    ssh_public_key_bastion  = tls_private_key.key.public_key_openssh
+  }
+}
 
 # Создаем отсортированный список master node, для того чтобы при создании файла hosts.ini из шаблона иметь доступ к счетчику (что бы сформировать запись etcd_member_name=etcd1, ...)
 locals {
   sorted_list_master_node     = flatten([
   for k, v in yandex_compute_instance.master-node : {
-      name            = v.name
-      network_public  = v.network_interface[0]["nat_ip_address"]
-      network_private = v.network_interface[0]["ip_address"]
+      name              = v.name
+      network_public    = v.network_interface[0]["nat_ip_address"]
+      network_private   = v.network_interface[0]["ip_address"]
     }
   ])
 }
@@ -167,10 +158,10 @@ resource "local_file" "hosts_templatefile" {
   content = templatefile("${path.module}/hosts.tftpl",
     {
       # master-node = yandex_compute_instance.master-node
-      master-node = local.sorted_list_master_node
+      master-node   = local.sorted_list_master_node
     }
   )
-  filename = "${abspath(path.module)}/hosts.ini"
-  file_permission = "0644"
+  filename          = "${abspath(path.module)}/hosts.ini"
+  file_permission   = "0644"
 }
 

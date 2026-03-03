@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-app
+  labels:
+    app: app
+spec:
+  replicas: 2 # Колличество подов
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app-animals
+          image: kolchinvladimir/app-animals:1.0.5
+          ports:
+            - containerPort: 80
+              name: port-app
+          envFrom:
+            - configMapRef:
+                name: DB_HOST

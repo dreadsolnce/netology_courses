@@ -11,24 +11,54 @@ package_upgrade: false
 
 packages: ${packages}
 
-# Копирование конфигурационного файла nginx (обратный прокси). Используем кодировку для передачи файла, т.к. даные содержат спец символы в виде :, а он корректно не передается
 write_files:
-  - path: /etc/nginx/sites-enabled/proxy
+  # Копирование конфигурационного файла nginx (обратный прокси). Используем кодировку для передачи файла, т.к. даные содержат спец символы в виде :, а он корректно не передается
+  - path: /tmp/proxy
     permissions: '0644'
     encoding: b64
     content: ${base64encode(file_content)}
-  - path: /home/ubuntu/hosts.ini
+
+  # Файл с хостами для запуска плейбука установки кластера k8s
+  - path: /tmp/hosts.ini
     permissions: '0644'
     encoding: b64
     content: ${base64encode(file_ansible_hosts)}
-  - path: /home/ubuntu/kubespray.sh
-    permissions: '0777'
+
+  # Приватный клюя для VM БАСТИОН
+  - path: /tmp/id_rsa
+    permissions: '0600'
     encoding: b64
-    content: ${file_kubespray}
-  - path: /home/ubuntu/addons.yml
+    content: ${base64encode(ssh_private_key)}
+
+  # Файл с настройками кластера
+  - path: /tmp/addons.yml
     permissions: '0644'
     encoding: b64
     content: ${file_addons}
 
+  # Скрипт установки кластера k8s
+  - path: /tmp/kubespray.sh
+    permissions: '0777'
+    encoding: b64
+    content: ${file_kubespray}
+
+  # Скрипт установки grafana
+  - path: /tmp/kube-prometheus.sh
+    permissions: '0777'
+    encoding: b64
+    content: ${file_prometheus}
+
 runcmd:
-  - cat /etc/hosts
+  - echo "Запуск cloud init"
+  - echo "Изменяем владельца домашнего каталога пользователя UBUNTU "
+  - sudo chown -R ubuntu:ubuntu /home/ubuntu
+  - echo "Изменяем владельца ключа на пользователя UBUNTU "
+  - sudo chown ubuntu:ubuntu /tmp/id_rsa
+  - echo "Копируем приватный ключ для бастион в каталог пользователя UBUNTU "
+  - cp /tmp/id_rsa /home/ubuntu/.ssh/id_rsa
+  - sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
+  - echo "Копируем конфигурационный файл nginx "
+  - sudo cp /tmp/proxy /etc/nginx/sites-enabled/proxy
+  - echo "Выполняем установку кластера k8s"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kubespray.sh" ]
+  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
