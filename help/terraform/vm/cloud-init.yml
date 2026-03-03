@@ -1,0 +1,14 @@
+#cloud-config
+users:
+  - name: ubuntu
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+      - ${ssh_public_key_bastion}
+package_update: true
+runcmd:
+  - echo "Добавляем публичный ключ BASTION"
+  - echo ${ssh_public_key_bastion}
+  - cat /etc/hostname
