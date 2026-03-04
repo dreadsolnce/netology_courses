@@ -1,0 +1,6 @@
+orgAllowlist: github.com/dreadsolnce/*
+
+github:
+  user: dreadsolnce
+  token: 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
+  secret: your-webhook-secret

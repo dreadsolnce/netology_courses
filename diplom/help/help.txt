@@ -5,6 +5,15 @@ kubectl describe node <имя-узла> | grep Taints
 
 ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" -C "bastion@example.com"
 
+kubectl -n app cp base_example/animals.sql mysql-f85f648f4-nrjtm:/tmp/dump.sql
+kubectl -n app exec pods/mysql-f85f648f4-nrjtm -- "mysql -u mysql -p'mysql' mysql < /tmp/dump.sql"
+kubectl -n app exec pods/mysql-f85f648f4-nrjtm -- "mysql -u ${MYSQL_USER} -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < /tmp/dump.sql"
+kubectl -n app exec pods/mysql-f85f648f4-nrjtm -- "cat /tmp/dump.sql | mysql -u ${MYSQL_USER} -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE}
+
+cat /tmp/animals.sql | mysql -u mysql -p'mysql' mysql
+kubectl -n app get pods | grep mysql | cut -d' ' -f1 | xargs -I {} kubectl -n app exec pods/{} -- mysql -p'mysql' -u mysql mysql
+kubectl apply -f app.yml
+
 
 как установить Cloud Controller Manager (CCM)
 

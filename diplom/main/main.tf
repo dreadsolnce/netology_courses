@@ -79,9 +79,13 @@ data "template_file" "cloudinit-bastion" {
     file_ansible_hosts  = templatefile("${path.module}/hosts.tftpl", {
         master-node     = local.sorted_list_master_node
     })
-    file_kubespray      = filebase64("${abspath(path.module)}/conf/kubespray/kubespray.sh")
-    file_addons         = filebase64("${abspath(path.module)}/conf/kubespray/addons.yml")
-    file_prometheus     = filebase64("${abspath(path.module)}/conf/kube-prometheus/kube-prometheus.sh")
+    file_kubespray            = filebase64("${abspath(path.module)}/conf/kubespray/kubespray.sh")
+    file_addons               = filebase64("${abspath(path.module)}/conf/kubespray/addons.yml")
+    file_prometheus           = filebase64("${abspath(path.module)}/conf/grafana/kube-prometheus.sh")
+    file_grafana_node_port    = filebase64("${abspath(path.module)}/conf/grafana/grafana-node-port.yml")
+    file_app                  = filebase64("${abspath(path.module)}/conf/app/all.yml")
+    file_base                 = filebase64("${abspath(path.module)}/conf/app/base/animals.sql")
+    file_appsh                = filebase64("${abspath(path.module)}/conf/app/app.sh")
   }
 }
 

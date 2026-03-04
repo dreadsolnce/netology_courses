@@ -12,8 +12,7 @@ output "Общая_информация_по_bastion" {
 
 output "Debug" {
   value = {
-    file_kubespray      = "${path.module}/conf/kubespray/kubespray.sh"
-    file_kubespray_abs  = "${abspath(path.module)}/conf/kubespray/kubespray.sh"
-    file_prometheus     = "${path.module}/conf/kube-prometheus/kube-prometheus.sh"
+    file_kubespray      = "${abspath(path.module)}/conf/kubespray/kubespray.sh"
+    file_prometheus     = "${abspath(path.module)}/conf/grafana/kube-prometheus.sh"
   }
 }

@@ -25,7 +25,7 @@ netology_courses/kubernetes/*/*.key
 netology_courses/kubernetes/*/*.crt
 netology_courses/kubernetes/*.csr
 
-#netology_courses/diplom/*/id_rsa*
+netology_courses/diplom/main/conf/atlantis/values.yml
 
 
 

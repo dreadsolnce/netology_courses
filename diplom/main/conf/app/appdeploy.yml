@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: deploy-app
+  namespace: app
   labels:
     app: app
 spec:
@@ -15,11 +16,18 @@ spec:
         app: app
     spec:
       containers:
-        - name: app-animals
+        - name: app
           image: kolchinvladimir/app-animals:1.0.5
           ports:
             - containerPort: 80
-              name: port-app
-          envFrom:
-            - configMapRef:
-                name: DB_HOST
+              name: app
+          env:
+          - name: DB_HOST
+            value: "mysql"
+          - name: DB_USER
+            value: "mysql"
+          - name: DB_PASSWORD
+            value: "mysql"
+          - name: DB_NAME
+            value: "mysql"
+
