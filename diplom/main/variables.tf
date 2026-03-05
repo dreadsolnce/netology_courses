@@ -85,7 +85,7 @@ variable "resources_bastion" {
   default = {
     cores             = 2
     memory            = 4
-    core_fraction     = 50
+    core_fraction     = 100
     disk_size         = 15
   }
   description = "Ресурсы для vm бастион"
