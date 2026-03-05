@@ -45,10 +45,20 @@ volumeClaim:
   storageClassName: "local-path"
   accessModes:
     - ReadWriteOnce
+
+# Указываем ссылку на созданный выше секрет
+vcsTokenSecretName: atlantis-vcs-secrets
+vcsTokenSecretKey: github-token
+vcsWebhookSecretName: atlantis-vcs-secrets
+vcsWebhookSecretKey: github-webhook-secret
+
 EOF
 
 echo "Установка простого StorageClass. Можно не делать т.к. он был включен в addons.yaml"
 #kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+
+echo "Создание секрета через kubectl"
+#kubectl create secret generic atlantis-vcs-secrets --namespace atlantis --from-literal=github-token='ghp_ВашРеальныйТокенИзШага1' --from-literal=github-webhook-secret='ВашСекретВебхука'
 
 helm upgrade --install atlantis runatlantis/atlantis  --namespace atlantis  -f value.yaml
 
