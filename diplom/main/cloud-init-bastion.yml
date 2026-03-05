@@ -84,9 +84,9 @@ runcmd:
   - echo "Копируем конфигурационный файл nginx "
   - sudo cp /tmp/proxy /etc/nginx/sites-available/proxy
   - sudo ln -s /etc/nginx/sites-available/proxy /etc/nginx/sites-enabled/proxy
-#  - echo "Выполняем установку кластера k8s"
-#  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kubespray.sh" ]
-#  - echo "Выполняем установку prometheus grafana"
-#  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
-#  - echo "Выполняем деплой тестового приложения"
-#  - [ sudo, -u, ubuntu, -i, bash, -c, "/home/ubuntu/app.sh" ]
+  - echo "Выполняем установку кластера k8s"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kubespray.sh" ]
+  - echo "Выполняем установку prometheus grafana"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
+  - echo "Выполняем деплой тестового приложения"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "/home/ubuntu/app.sh" ]
