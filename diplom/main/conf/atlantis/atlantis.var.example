@@ -3,3 +3,6 @@ TOKEN=ghp_...
 URL=http://<твой домен>
 USERNAME=<имя пользователя github>
 REPO_ALLOWLIST="github.com/<имя пользователя github>/*"
+
+YC_CLOUD_ID: "b1gr160bk1vuruuer3om"
+YC_FOLDER_ID: "b1gdmpusv51ippn2psip"
