@@ -12,6 +12,12 @@ upstream backend_app {
 %{ endfor ~}
 }
 
+upstream backend_atlantis {
+%{ for content in master-node ~}
+    server ${content["network_private"]}:30141 max_fails=1 fail_timeout=10s;
+%{ endfor ~}
+}
+
 server {
     listen 80;
     server_name grafana.kvlpro.site;
@@ -30,6 +36,20 @@ server {
 
     location / {
         proxy_pass http://backend_app;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+}
+
+server {
+    listen 80;
+    server_name atlantis.kvlpro.site;
+
+    location / {
+        proxy_pass http://backend_atlantis;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
