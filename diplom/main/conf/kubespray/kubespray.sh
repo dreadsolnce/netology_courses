@@ -87,8 +87,14 @@ kubectl taint nodes master2 node-role.kubernetes.io/control-plane:NoSchedule-
 
 kubectl taint nodes master3 node-role.kubernetes.io/control-plane:NoSchedule-
 
+echo "Установка HELM"
 
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
 
+helm completion bash > ~/.helm_completion.sh
 
+echo "source ~/.helm_completion.sh" >> ~/.bashrc
+
+source ~/.bashrc
 
 

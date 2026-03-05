@@ -1,0 +1,6 @@
+SECRET=1bcdf0625a9c812ccb8b
+TOKEN=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o
+URL=http://atlantis.kvlpro.site
+USERNAME=dreadsolnce
+REPO_ALLOWLIST=github.com/dreadsolnce/*
+URL_GITHUB_WEBHOOK=http://atlantis.kvlpro.site/events

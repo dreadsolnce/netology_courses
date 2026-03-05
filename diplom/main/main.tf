@@ -47,6 +47,7 @@ resource "yandex_compute_instance" "bastion" {
     subnet_id               = yandex_vpc_subnet.sunbets["public"].id
     nat                     = var.settings_bastion.nat
     ip_address              = var.settings_bastion.ipaddress
+    nat_ip_address = yandex_vpc_address.public_ip_static.external_ipv4_address[0].address
   }
 
   # Прерываемая машина

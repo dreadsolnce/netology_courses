@@ -14,7 +14,7 @@ upstream backend_app {
 
 server {
     listen 80;
-    server_name test.grafana.local www.test.grafana.local;
+    server_name grafana.kvlpro.site;
 
     location / {
         proxy_pass http://backend_servers;
@@ -26,7 +26,7 @@ server {
 }
 server {
     listen 80;
-    server_name test.app.local www.test.app.local;
+    server_name animals.kvlpro.site;
 
     location / {
         proxy_pass http://backend_app;
