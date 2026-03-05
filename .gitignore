@@ -26,7 +26,8 @@ netology_courses/kubernetes/*/*.crt
 netology_courses/kubernetes/*.csr
 
 netology_courses/diplom/main/conf/atlantis/values.yml
-netology_courses/diplom/main/conf/atlantis/atlantis.var
+*atlantis.var*
+
 
 
 
