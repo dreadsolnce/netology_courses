@@ -3,5 +3,7 @@ projects:
   - name: my-infrastructure
     dir: diplom/main  # Папка, где лежат .tf файлы
     autoplan:
-      when_modified: ["*.tf"] # Запускать plan автоматически при изменении tf-файлов
+      when_modified: 
+        - "*.tf" 
+        - "!providers.tf" # Запускать plan автоматически при изменении tf-файлов
       enabled: true
