@@ -84,7 +84,7 @@ variable "resources_bastion" {
   )
   default = {
     cores             = 2
-    memory            = 8
+    memory            = 4
     core_fraction     = 50
     disk_size         = 15
   }
