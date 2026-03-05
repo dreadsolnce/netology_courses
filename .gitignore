@@ -27,7 +27,7 @@ netology_courses/kubernetes/*.csr
 
 netology_courses/diplom/main/conf/atlantis/values.yml
 *atlantis.var*
-
+diplom/main/hosts.ini
 
 
 
