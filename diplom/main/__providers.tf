@@ -44,9 +44,9 @@ terraform {
 }
 
 provider "yandex" {
-  cloud_id                  = var.cloud_id
-  folder_id                 = var.folder_id
+  cloud_id                  = var.yc_cloud_id
+  folder_id                 = var.yc_folder_id
   zone                      = var.default-zone
-  service_account_key_file  = local.sa_key_file
+  service_account_key_file  = file(var.auth_key_sa_yandex)
 }
 

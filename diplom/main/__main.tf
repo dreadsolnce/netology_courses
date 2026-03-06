@@ -3,7 +3,7 @@ resource "yandex_vpc_network" "vpc" {
   name = var.vpc_name == null ? "unknown" : var.vpc_name
 }
 
-# Создание приватных подсетей
+# Создание приватных подсетей и одной публичной для VM БАСТИОН
 resource "yandex_vpc_subnet" "sunbets" {
   for_each = var.subnets
 
@@ -39,7 +39,7 @@ resource "yandex_compute_instance" "bastion" {
     initialize_params {
       image_id = var.image_bastion
       size     = var.resources_bastion.disk_size # Размер в ГБ
-      type     = "network-hdd"
+      type     = var.resources_bastion.type_disk
     }
   }
 
@@ -57,7 +57,7 @@ resource "yandex_compute_instance" "bastion" {
 
   metadata = {
     serial-port-enable  = 1
-    ssh-keys            = "ubuntu:${local.ssh_pub_key}"                   # Через файл открытого ключа pub на локальной машине
+    ssh-keys            = "ubuntu:${file(var.ssh_public_key)}"            # Через файл открытого ключа pub на локальной машине
     user-data           = data.template_file.cloudinit-bastion.rendered   # Установка дополнительного ПО
   }
   # Создается только после того как создадутся мастер ноды
@@ -71,14 +71,14 @@ data "template_file" "cloudinit-bastion" {
   template = file("./cloud-init-bastion.yml")
   # Переменные
   vars = {
-    ssh_public_key      = local.ssh_pub_key
-    ssh_private_key     = tls_private_key.key.private_key_pem
-    packages            = jsonencode(var.packages)
-    file_content        = templatefile("${path.module}/proxy.tftpl", {
-        master-node     = local.sorted_list_master_node
+    ssh_public_key            = file(var.ssh_public_key)
+    ssh_private_key           = tls_private_key.key.private_key_pem
+    packages                  = jsonencode(var.packages)
+    file_content              = templatefile("${path.module}/proxy.tftpl", {
+        master-node           = local.sorted_list_master_node
     })
-    file_ansible_hosts  = templatefile("${path.module}/hosts.tftpl", {
-        master-node     = local.sorted_list_master_node
+    file_ansible_hosts        = templatefile("${path.module}/hosts.tftpl", {
+        master-node           = local.sorted_list_master_node
     })
     file_kubespray            = filebase64("${abspath(path.module)}/conf/kubespray/kubespray.sh")
     file_addons               = filebase64("${abspath(path.module)}/conf/kubespray/addons.yml")
@@ -114,8 +114,8 @@ resource "yandex_compute_instance" "master-node" {
   boot_disk {
     initialize_params {
       image_id  = data.yandex_compute_image.image.image_id
-      size      = 15 # Размер в ГБ
-      type      = "network-hdd"
+      size      = var.resources_master_nodes.disk_size
+      type      = var.resources_master_nodes.type_disk
     }
   }
 
@@ -133,17 +133,18 @@ resource "yandex_compute_instance" "master-node" {
   metadata = {
     # Доступ через файлы открытых ключей: локальная машина и VM БАСТИОН
     serial-port-enable  = 1
-    ssh-keys            = "ubuntu:${trimspace(local.ssh_pub_key)}"
+    ssh-keys            = "ubuntu:${file(var.ssh_public_key)}"
     user-data           = data.template_file.cloudinit-vm.rendered
   }
 }
 
+# Добавляем открытый ключ для доступа из VM БАСТИОН
 data "template_file" "cloudinit-vm" {
-  template                  = file("./cloud-init-vm.yml")
-  # Переменные
+  template                  = file("./cloud-init_vm.yml")
+  # Переменные которые передаются в шаблон при первом запуске
   vars = {
-    ssh_public_key          = local.ssh_pub_key
-    ssh_public_key_bastion  = tls_private_key.key.public_key_openssh
+    ssh_public_key_local          = file(var.ssh_public_key)
+    ssh_public_key_bastion        = tls_private_key.key.public_key_openssh
   }
 }
 

@@ -76,17 +76,20 @@ runcmd:
   - echo "Запуск cloud init"
   - echo "Изменяем владельца домашнего каталога пользователя UBUNTU "
   - sudo chown -R ubuntu:ubuntu /home/ubuntu
-  - echo "Изменяем владельца ключа на пользователя UBUNTU "
-  - sudo chown ubuntu:ubuntu /tmp/id_rsa
-  - echo "Копируем приватный ключ (который создали с помощью terraform) для бастион в каталог пользователя UBUNTU "
-  - cp /tmp/id_rsa /home/ubuntu/.ssh/id_rsa
-  - sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
-  - echo "Копируем конфигурационный файл nginx "
-  - sudo cp /tmp/proxy /etc/nginx/sites-available/proxy
-  - sudo ln -s /etc/nginx/sites-available/proxy /etc/nginx/sites-enabled/proxy
-  - echo "Выполняем установку кластера k8s"
-  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kubespray.sh" ]
-  - echo "Выполняем установку prometheus grafana"
-  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
-  - echo "Выполняем деплой тестового приложения"
-  - [ sudo, -u, ubuntu, -i, bash, -c, "/home/ubuntu/app.sh" ]
+  - echo "Копируем файл .bashrc"
+  - cp /etc/skel/.bashrc /home/ubuntu/.bashrc; sudo chown -R ubuntu:ubuntu /home/ubuntu/.bashrc
+  - [ sudo, -u, ubuntu, -i, bash, -c, ". /home/ubuntu/.bashrc" ]
+#  - echo "Изменяем владельца ключа на пользователя UBUNTU "
+#  - sudo chown ubuntu:ubuntu /tmp/id_rsa
+#  - echo "Копируем приватный ключ (который создали с помощью terraform) для бастион в каталог пользователя UBUNTU "
+#  - cp /tmp/id_rsa /home/ubuntu/.ssh/id_rsa
+#  - sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
+#  - echo "Копируем конфигурационный файл nginx "
+#  - sudo cp /tmp/proxy /etc/nginx/sites-available/proxy
+#  - sudo ln -s /etc/nginx/sites-available/proxy /etc/nginx/sites-enabled/proxy
+#  - echo "Выполняем установку кластера k8s"
+#  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kubespray.sh" ]
+#  - echo "Выполняем установку prometheus grafana"
+#  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
+#  - echo "Выполняем деплой тестового приложения"
+#  - [ sudo, -u, ubuntu, -i, bash, -c, "/home/ubuntu/app.sh" ]

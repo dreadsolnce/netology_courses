@@ -1,3 +1,10 @@
+output "Абсолютный_путь" {
+  value = {
+    path    = path.module
+    abspath = abspath(path.module)
+  }
+}
+
 output "Общая_информация_по_мастер_нодам" {
   value = local.sorted_list_master_node
 }
