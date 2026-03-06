@@ -1,11 +1,13 @@
 #cloud vars
 variable "cloud_id" {
   type        = string
+  default     = "b1gr160bk1vuruuer3om"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
 }
 
 variable "folder_id" {
   type        = string
+  default     = "b1gdmpusv51ippn2psip"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
 }
 
