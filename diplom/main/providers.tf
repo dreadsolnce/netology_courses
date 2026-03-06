@@ -31,7 +31,7 @@ terraform {
     key    = "terraform.tfstate"
 
     shared_credentials_files = ["~/.aws/credentials-diplom"]
-    profile = "default"
+    # profile = "default"
 
     # dynamodb_table = "tb-lock-diplom" # Старая версия блокировки файла состояния
     use_lockfile = true                 # Используется нативная блокировка S3 начиная с версии 1.10
