@@ -9,10 +9,10 @@ terraform {
       version = "0.191.0"
     }
 
-    template = {
-      source  = "hashicorp/template"
-      version = "2.2.0"
-    }
+    ## template = {
+    ##   source  = "hashicorp/template"
+    ##   version = "2.2.0"
+    ## }
   }
   backend "s3" {
     # endpoints = {
@@ -21,13 +21,17 @@ terraform {
     #  # Хранение файла terraform.tfstate
     #  s3 = "https://storage.yandexcloud.net"
     # }
-    endpoint = "https://storage.yandexcloud.net"
+    # endpoint = "https://storage.yandexcloud.net"
+    endpoints = {
+      s3 = "https://storage.yandexcloud.net"
+    }
+
     bucket = "tfstate-b1gdmpusv51ippn2psip"
     region  = "ru-central1"
     key    = "terraform.tfstate"
 
     shared_credentials_files = ["~/.aws/credentials-diplom"]
-    profile = "default"
+    # profile = "default"
 
     # dynamodb_table = "tb-lock-diplom" # Старая версия блокировки файла состояния
     use_lockfile = true                 # Используется нативная блокировка S3 начиная с версии 1.10
