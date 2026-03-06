@@ -21,7 +21,11 @@ terraform {
     #  # Хранение файла terraform.tfstate
     #  s3 = "https://storage.yandexcloud.net"
     # }
-    endpoint = "https://storage.yandexcloud.net"
+    # endpoint = "https://storage.yandexcloud.net"
+    endpoints = {
+      s3 = "https://storage.yandexcloud.net"
+    }
+
     bucket = "tfstate-b1gdmpusv51ippn2psip"
     region  = "ru-central1"
     key    = "terraform.tfstate"

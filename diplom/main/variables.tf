@@ -141,7 +141,7 @@ variable "resources_master_nodes" {
   )
   default = {
     cores             = 2
-    memory            = 4
+    memory            = 8
     core_fraction     = 100
     disk_size         = 15
   }
