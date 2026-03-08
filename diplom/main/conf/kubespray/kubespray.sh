@@ -12,22 +12,21 @@ curl https://pyenv.run | /bin/bash
 echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
 echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-#export PYENV_ROOT="$HOME/.pyenv"
-#export PATH="$PYENV_ROOT/bin:$PATH"
-#eval "$(pyenv init -)"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
-#source ~/.bashrc
+source ~/.bashrc
 
 pyenv install 3.12.7
 
 pyenv local 3.12.7
 
 # Установка кластера k8s с помощью kubespray
+echo "Установка кластера k8s"
 git clone https://github.com/kubernetes-sigs/kubespray.git
 
 cd kubespray
-
-#git checkout  remotes/origin/release-2.30
 
 cp -rfp inventory/sample inventory/k8s_cluster
 
@@ -59,6 +58,8 @@ deactivate
 
 rm -rf kubespray/
 
+# Установка комманды kubectl
+echo "Установка kubectl"
 cd /home/ubuntu
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
@@ -75,18 +76,27 @@ source .bashrc
 
 mkdir .kube
 
-ssh -o StrictHostKeyChecking=no ubuntu@192.168.1.11 "sudo cp /etc/kubernetes/admin.conf /tmp/config ; sudo chown ubuntu:ubuntu /tmp/config"
+ssh -o StrictHostKeyChecking=no ubuntu@$1 "sudo cp /etc/kubernetes/admin.conf /tmp/config ; sudo chown ubuntu:ubuntu /tmp/config"
 
-scp -o StrictHostKeyChecking=no ubuntu@192.168.1.11:/tmp/config .kube/config
+scp -o StrictHostKeyChecking=no ubuntu@$1:/tmp/config .kube/config
 
 sudo chown ubuntu:ubuntu .kube/config
 
-kubectl taint nodes master1 node-role.kubernetes.io/control-plane:NoSchedule-
+# Настройка мастер нод
+echo "Настройка мастер нод"
 
-kubectl taint nodes master2 node-role.kubernetes.io/control-plane:NoSchedule-
+val=$(kubectl get nodes | grep control-plane | cut -d' ' -f1 | tail -n +1)
+for server in $val; do
+  kubectl taint nodes "$server" node-role.kubernetes.io/control-plane:NoSchedule-
+done
 
-kubectl taint nodes master3 node-role.kubernetes.io/control-plane:NoSchedule-
+#kubectl taint nodes master1 node-role.kubernetes.io/control-plane:NoSchedule-
 
+#kubectl taint nodes master2 node-role.kubernetes.io/control-plane:NoSchedule-
+
+#kubectl taint nodes master3 node-role.kubernetes.io/control-plane:NoSchedule-
+
+# Установка HELM
 echo "Установка HELM"
 
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash

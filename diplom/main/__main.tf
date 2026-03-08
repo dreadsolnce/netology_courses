@@ -74,6 +74,7 @@ data "template_file" "cloudinit-bastion" {
     ssh_public_key            = file(var.ssh_public_key)
     ssh_private_key           = tls_private_key.key.private_key_pem
     packages                  = jsonencode(var.packages)
+    name_control_node         = local.sorted_list_master_node[0].name
     file_content              = templatefile("${path.module}/proxy.tftpl", {
         master-node           = local.sorted_list_master_node
     })
