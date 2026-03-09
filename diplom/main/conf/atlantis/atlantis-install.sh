@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 
 echo "Создание рандомной секретной строки для webhooks github"
 echo $RANDOM | md5sum | head -c 20; echo
@@ -11,6 +11,7 @@ echo "Issue comments ... Pull requests ... Pull request reviews ... Pushes"
 #echo "Подгружаем переменные из файла atlantis.var"
 #. atlantis.var
 
+echo "Проверка что подгрузились переменные окружения"
 echo $USERNAME
 
 echo "Добавляем репозиторий runatlantis"
