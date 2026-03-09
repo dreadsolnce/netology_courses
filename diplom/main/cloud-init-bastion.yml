@@ -78,6 +78,12 @@ write_files:
     encoding: b64
     content: ${file_secret_tmpl}
 
+  # Скрипт установки сервиса atlantis
+  - path: /home/ubuntu/atlantis-install.sh
+    permissions: '0777'
+    encoding: b64
+    content: ${file_atlantis}
+
 runcmd:
   - echo "Запуск cloud init"
   - echo "Изменяем владельца домашнего каталога пользователя UBUNTU "
@@ -95,3 +101,5 @@ runcmd:
   - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
   - echo "Выполняем деплой тестового приложения"
   - [ sudo, -u, ubuntu, -i, bash, -c, "db_host=${db_host} db_user=${db_user} db_password=${db_password} db_name=${db_name} mysql_root_password=${mysql_root_password} /home/ubuntu/app.sh" ]
+  - echo "Выполняем деплой сервиса atlantis"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "SECRET=${secret} TOKEN=${token} URL=${url} USERNAME=${username} REPO_ALLOWLIST=${repo_github} YC_CLOUD_ID=${yc_cloud_id} YC_FOLDER_ID=${yc_folder_id}  /home/ubuntu/atlantis-install.sh" ]

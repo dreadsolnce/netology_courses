@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 
 echo "Создание рандомной секретной строки для webhooks github"
 echo $RANDOM | md5sum | head -c 20; echo
@@ -8,8 +8,8 @@ echo "Добавьте вывод в переменную SECRET в файл atl
 echo "Параметры индивидуальные события для webhook"
 echo "Issue comments ... Pull requests ... Pull request reviews ... Pushes"
 
-echo "Подгружаем переменные из файла atlantis.var"
-. atlantis.var
+#echo "Подгружаем переменные из файла atlantis.var"
+#. atlantis.var
 
 echo $USERNAME
 
@@ -22,14 +22,14 @@ helm repo update
 echo "Создаем рабочее пространство для atlantis с именем atlantis"
 kubectl create namespace atlantis --dry-run=client -o yaml | kubectl apply -f -
 
-kubectl -n atlantis delete secrets yandex-key-secret
-kubectl -n atlantis create secret generic yandex-key-secret --from-file=/home/ubuntu/key.json
-
-#echo "Секрет для токенов и ключей S3"
-#kubectl create secret generic atlantis-secrets \
-#   --from-literal=ATLANTIS_GH_TOKEN="ghp_..." \
-#   --from-literal=AWS_ACCESS_KEY_ID="YCA..." \
-#   --from-literal=AWS_SECRET_ACCESS_KEY="YCP..."
+#kubectl -n atlantis delete secrets yandex-key-secret
+#kubectl -n atlantis create secret generic yandex-key-secret --from-file=/home/ubuntu/key.json
+#
+##echo "Секрет для токенов и ключей S3"
+##kubectl create secret generic atlantis-secrets \
+##   --from-literal=ATLANTIS_GH_TOKEN="ghp_..." \
+##   --from-literal=AWS_ACCESS_KEY_ID="YCA..." \
+##   --from-literal=AWS_SECRET_ACCESS_KEY="YCP..."
 
 echo "Создаем файл value.yaml для atlantis со своими настройками"
 cat <<EOF > value.yaml
@@ -59,27 +59,27 @@ environment:
   YC_CLOUD_ID: ${YC_CLOUD_ID}
   YC_FOLDER_ID: ${YC_FOLDER_ID}
 
-  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-
-  YC_SERVICE_ACCOUNT_KEY_FILE: "/etc/atlantis/key.json"
-# Указываем ссылку на созданный выше секрет
-#vcsTokenSecretName: atlantis-vcs-secrets
-#vcsTokenSecretKey: github-token
-#vcsWebhookSecretName: atlantis-vcs-secrets
-#vcsWebhookSecretKey: github-webhook-secret
-
-extraVolumes:
-  - name: yandex-key-volume
-    secret:
-      secretName: yandex-key-secret
-      items:
-        - key: key.json
-          path: key.json
-extraVolumeMounts:
-  - name: yandex-key-volume
-    mountPath: /etc/atlantis
-    readOnly: true
+#  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+#  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+#
+#  YC_SERVICE_ACCOUNT_KEY_FILE: "/etc/atlantis/key.json"
+## Указываем ссылку на созданный выше секрет
+##vcsTokenSecretName: atlantis-vcs-secrets
+##vcsTokenSecretKey: github-token
+##vcsWebhookSecretName: atlantis-vcs-secrets
+##vcsWebhookSecretKey: github-webhook-secret
+#
+#extraVolumes:
+#  - name: yandex-key-volume
+#    secret:
+#      secretName: yandex-key-secret
+#      items:
+#        - key: key.json
+#          path: key.json
+#extraVolumeMounts:
+#  - name: yandex-key-volume
+#    mountPath: /etc/atlantis
+#    readOnly: true
 
 EOF
 

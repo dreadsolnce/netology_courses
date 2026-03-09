@@ -82,6 +82,14 @@ data "template_file" "cloudinit-bastion" {
     db_name                   = var.db_name
     mysql_root_password       = var.mysql_root_password
 
+    secret                    = var.secret
+    token                     = var.token
+    url                       = var.url
+    username                  = var.username
+    repo_github               = var.repo_github
+    yc_cloud_id               = var.yc_cloud_id
+    yc_folder_id              = var.yc_folder_id
+
     name_control_node         = local.sorted_list_master_node[0].name
     file_content              = templatefile("${path.module}/proxy.tftpl", {
         master-node           = local.sorted_list_master_node
@@ -98,6 +106,7 @@ data "template_file" "cloudinit-bastion" {
     file_base                 = filebase64("${abspath(path.module)}/conf/app/base/animals.sql")
     file_appsh                = filebase64("${abspath(path.module)}/conf/app/app.sh")
     file_secret_tmpl          = filebase64("${abspath(path.module)}/conf/app/mysqlsecret.yaml.tmpl")
+    file_atlantis             = filebase64("${abspath(path.module)}/conf/atlantis/atlantis-install.sh")
   }
 }
 

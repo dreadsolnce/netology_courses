@@ -157,7 +157,36 @@ variable "mysql_root_password" {
   default     = "test"
   description = "Переменная с паролем пользователя root базы данных"
 }
+# atlantis
+variable "secret" {
+  type        = string
+  default     = "test"
+  description = "Секретная фраза для webhook github"
+}
 
+variable "token" {
+  type        = string
+  default     = "ghp_test"
+  description = "Переменная с токеном для доступа к github репозиторию"
+}
+
+variable "url" {
+  type        = string
+  default     = "atlantis.kvlpro.site"
+  description = "Доменное имя сервиса atlantis"
+}
+
+variable "username" {
+  type        = string
+  default     = "dreadsolnce"
+  description = "Имя пользователя для доступа к github репозиторию"
+}
+
+variable "repo_github" {
+  type        = string
+  default     = "dreadsolnce"
+  description = "GitHub репозиторий"
+}
 ######################## переменные для мастер нод кластера ##############################################
 variable "image" {
   type            = string
