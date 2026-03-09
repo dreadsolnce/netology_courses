@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -e
+set -e
 
 echo "Создание рандомной секретной строки для webhooks github"
 echo $RANDOM | md5sum | head -c 20; echo
