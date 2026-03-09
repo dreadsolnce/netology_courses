@@ -73,7 +73,15 @@ data "template_file" "cloudinit-bastion" {
   vars = {
     ssh_public_key            = file(var.ssh_public_key)
     ssh_private_key           = tls_private_key.key.private_key_pem
+
     packages                  = jsonencode(var.packages)
+
+    db_host                   = var.db_host
+    db_user                   = var.db_user
+    db_password               = var.db_password
+    db_name                   = var.db_name
+    mysql_root_password       = var.mysql_root_password
+
     name_control_node         = local.sorted_list_master_node[0].name
     file_content              = templatefile("${path.module}/proxy.tftpl", {
         master-node           = local.sorted_list_master_node
@@ -81,13 +89,15 @@ data "template_file" "cloudinit-bastion" {
     file_ansible_hosts        = templatefile("${path.module}/hosts.tftpl", {
         master-node           = local.sorted_list_master_node
     })
+
     file_kubespray            = filebase64("${abspath(path.module)}/conf/kubespray/kubespray.sh")
     file_addons               = filebase64("${abspath(path.module)}/conf/kubespray/addons.yml")
     file_prometheus           = filebase64("${abspath(path.module)}/conf/grafana/kube-prometheus.sh")
     file_grafana_node_port    = filebase64("${abspath(path.module)}/conf/grafana/grafana-node-port.yml")
-    file_app                  = filebase64("${abspath(path.module)}/conf/app/all.yml")
+    file_app                  = filebase64("${abspath(path.module)}/conf/app/app.yml")
     file_base                 = filebase64("${abspath(path.module)}/conf/app/base/animals.sql")
     file_appsh                = filebase64("${abspath(path.module)}/conf/app/app.sh")
+    file_secret_tmpl          = filebase64("${abspath(path.module)}/conf/app/mysqlsecret.yaml.tmpl")
   }
 }
 

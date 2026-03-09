@@ -72,6 +72,12 @@ write_files:
     encoding: b64
     content: ${file_appsh}
 
+  # Шаблон создания секрета
+  - path: /home/ubuntu/mysqlsecret.yaml.tmpl
+    permissions: '0644'
+    encoding: b64
+    content: ${file_secret_tmpl}
+
 runcmd:
   - echo "Запуск cloud init"
   - echo "Изменяем владельца домашнего каталога пользователя UBUNTU "
@@ -85,7 +91,7 @@ runcmd:
   - sudo ln -s /etc/nginx/sites-available/proxy /etc/nginx/sites-enabled/proxy
   - echo "Выполняем установку кластера k8s"
   - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kubespray.sh ${name_control_node}" ]
-#  - echo "Выполняем установку prometheus grafana"
-#  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
-#  - echo "Выполняем деплой тестового приложения"
-#  - [ sudo, -u, ubuntu, -i, bash, -c, "/home/ubuntu/app.sh" ]
+  - echo "Выполняем установку prometheus grafana"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
+  - echo "Выполняем деплой тестового приложения"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "db_host=${db_host} db_user=${db_user} db_password=${db_password} db_name=${db_name} mysql_root_password=${mysql_root_password} /home/ubuntu/app.sh" ]

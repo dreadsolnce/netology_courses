@@ -17,9 +17,10 @@ output "Общая_информация_по_bastion" {
   }
 }
 
-output "Debug" {
+output "Основные_скрипты_запуска" {
   value = {
     file_kubespray      = "${abspath(path.module)}/conf/kubespray/kubespray.sh"
     file_prometheus     = "${abspath(path.module)}/conf/grafana/kube-prometheus.sh"
+    file_app            = "${abspath(path.module)}/conf/app/app.sh"
   }
 }

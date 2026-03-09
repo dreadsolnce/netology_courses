@@ -90,12 +90,6 @@ for server in $val; do
   kubectl taint nodes "$server" node-role.kubernetes.io/control-plane:NoSchedule-
 done
 
-#kubectl taint nodes master1 node-role.kubernetes.io/control-plane:NoSchedule-
-
-#kubectl taint nodes master2 node-role.kubernetes.io/control-plane:NoSchedule-
-
-#kubectl taint nodes master3 node-role.kubernetes.io/control-plane:NoSchedule-
-
 # Установка HELM
 echo "Установка HELM"
 
@@ -106,5 +100,3 @@ helm completion bash > ~/.helm_completion.sh
 echo "source ~/.helm_completion.sh" >> ~/.bashrc
 
 source ~/.bashrc
-
-

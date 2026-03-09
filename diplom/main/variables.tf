@@ -124,8 +124,38 @@ variable "settings_bastion" {
 #####################Переменные cloud-init##################################
 variable "packages" {
     type        = list(string)
-    default     = [ "htop", "tmux", "net-tools", "mc", "vim", "nginx", "ansible", "git", "python3-venv", "libssl-dev", "liblzma-dev", "python3-tk", "libsqlite3-dev", "libreadline-dev", "libffi-dev", "libncurses5-dev", "libncursesw5-dev", "libbz2-dev", "build-essential", "gcc", "python3-pip", "mysql-client" ]
+    default     = [ "htop", "tmux", "net-tools", "mc", "vim", "nginx", "ansible", "git", "python3-venv", "libssl-dev", "liblzma-dev", "python3-tk", "libsqlite3-dev", "libreadline-dev", "libffi-dev", "libncurses5-dev", "libncursesw5-dev", "libbz2-dev", "build-essential", "gcc", "python3-pip" ] #, "mysql-client" ]
     description = "Устанавливаемые пакеты по умолчанию"
+}
+
+variable "db_host" {
+  type            = string
+  default         = "test"
+  description     = "Переменная с именем хоста базы данных"
+}
+
+variable "db_user" {
+  type        = string
+  default     = "test"
+  description = "Переменная с именем пользователя базы данных"
+}
+
+variable "db_password" {
+  type        = string
+  default     = "test"
+  description = "Переменная с паролем пользователя базы данных"
+}
+
+variable "db_name" {
+  type        = string
+  default     = "test"
+  description = "Переменная с именем базы данных"
+}
+
+variable "mysql_root_password" {
+  type        = string
+  default     = "test"
+  description = "Переменная с паролем пользователя root базы данных"
 }
 
 ######################## переменные для мастер нод кластера ##############################################
@@ -153,7 +183,7 @@ variable "resources_master_nodes" {
   )
   default = {
     cores             = 2
-    memory            = 8
+    memory            = 4
     core_fraction     = 100
     disk_size         = 15
     type_disk         = "network-hdd"

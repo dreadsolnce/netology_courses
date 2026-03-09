@@ -1,11 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name:  app     # Имя вашего нового пространства имен
-  labels:
-    app: app
----
-apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: pv-mysql
@@ -18,7 +11,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
   hostPath:
-    path: /home/ubuntu/localVolume/front
+    path: /home/ubuntu/localVolume/app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -71,13 +64,25 @@ spec:
               name: app
           env:
           - name: DB_HOST
-            value: "mysql"
+            valueFrom:
+              secretKeyRef:
+                name: mysqlsecret
+                key: DB_HOST
           - name: DB_USER
-            value: "mysql"
+            valueFrom:
+              secretKeyRef:
+                name: mysqlsecret
+                key: DB_USER
           - name: DB_PASSWORD
-            value: "mysql"
+            valueFrom:
+              secretKeyRef:
+                name: mysqlsecret
+                key: DB_PASSWORD
           - name: DB_NAME
-            value: "mysql"
+            valueFrom:
+              secretKeyRef:
+                name: mysqlsecret
+                key: DB_NAME
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -103,20 +108,37 @@ spec:
               name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "mysql"
+              valueFrom:
+                secretKeyRef:
+                  name: mysqlsecret
+                  key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_USER
-              value: "mysql"
+              valueFrom:
+                secretKeyRef:
+                  name: mysqlsecret
+                  key: DB_USER
             - name: MYSQL_PASSWORD
-              value: "mysql"
+              valueFrom:
+                secretKeyRef:
+                  name: mysqlsecret
+                  key: DB_PASSWORD
             - name: MYSQL_DATABASE
-              value: "mysql"
+              valueFrom:
+                secretKeyRef:
+                  name: mysqlsecret
+                  key: DB_NAME
           volumeMounts:
             - name: storage
               mountPath: /var/lib/mysql
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d
       volumes:
         - name: storage
           persistentVolumeClaim:
             claimName: pvc-mysql
+        - name: init-sql
+          configMap:
+            name: mysql-init-sql
 ---
 apiVersion: v1
 kind: Service
