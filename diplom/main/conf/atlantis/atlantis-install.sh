@@ -66,6 +66,11 @@ environment:
   TF_VAR_db_password: ${DB_PASSWORD}
   TF_VAR_db_name: ${DB_NAME}
   TF_VAR_mysql_root_password: ${MYSQL_ROOT_PASSWORD}
+  TF_VAR_secret: ${SECRET}
+  TF_VAR_token: ${TOKEN}
+  TF_VAR_url: ${URL}
+  TF_VAR_username: ${USERNAME}
+  TF_VAR_repo_github: ${REPO_ALLOWLIST}
 
 extraVolumes:
   - name: yandex-key-volume

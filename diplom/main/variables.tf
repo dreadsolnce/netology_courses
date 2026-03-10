@@ -1,13 +1,13 @@
 ##cloud vars
 variable "yc_cloud_id" {
   type        = string
-  default     = "b1gr160bk1vuruuer3om"
+  # default     = "b1gr160bk1vuruuer3om"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
 }
 
 variable "yc_folder_id" {
   type        = string
-  default     = "b1gdmpusv51ippn2psip"
+  # default     = "b1gdmpusv51ippn2psip"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
 }
 
@@ -129,7 +129,7 @@ variable "packages" {
 
 variable "db_host" {
   type            = string
-  default         = "test"
+  # default         = "test"
   description     = "Переменная с именем хоста базы данных"
 }
 
