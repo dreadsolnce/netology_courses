@@ -1,4 +1,4 @@
-# Создание сети для проекта
+## Создание сети для проекта
 resource "yandex_vpc_network" "vpc" {
   name = var.vpc_name == null ? "unknown" : var.vpc_name
 }
