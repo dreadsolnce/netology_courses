@@ -19,9 +19,6 @@ helm repo add runatlantis https://runatlantis.github.io/helm-charts
 echo "Обновляем репозитории"
 helm repo update
 
-echo "Копируем в pod файл настройки .terraformrc"
-kubectl -n atlantis cp /home/ubuntu/.terraformrc atlantis-0:/home/atlantis/.terraformrc
-
 echo "Создаем рабочее пространство для atlantis с именем atlantis"
 kubectl create namespace atlantis --dry-run=client -o yaml | kubectl apply -f -
 
@@ -33,6 +30,9 @@ kubectl -n atlantis create secret generic s3-key-secret --from-file=/home/ubuntu
 kubectl -n atlantis delete secrets pub-key-secret
 kubectl -n atlantis create secret generic pub-key-secret --from-file=/home/ubuntu/id_rsa.pub
 
+echo "Создаем configMap с содержимым файла .terraformrc"
+kubectl -n atlantis delete configmap atlantis-terraformrc
+kubectl -n atlantis create configmap atlantis-terraformrc --from-file=.terraformrc=/home/ubuntu/.terraformrc
 
 #echo "Секрет для токенов и ключей S3"
 #kubectl create secret generic atlantis-secrets \
@@ -68,8 +68,8 @@ environment:
   YC_CLOUD_ID: ${YC_CLOUD_ID}
   YC_FOLDER_ID: ${YC_FOLDER_ID}
 
-  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+#  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+#  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 
 extraVolumes:
   - name: yandex-key-volume
@@ -90,6 +90,10 @@ extraVolumes:
       items:
         - key: id_rsa.pub
           path: id_rsa.pub
+  - name: terraformrc
+    configMap:
+      name: atlantis-terraformrc
+
 extraVolumeMounts:
   - name: yandex-key-volume
     mountPath: /home/atlantis/keys
@@ -100,6 +104,14 @@ extraVolumeMounts:
   - name: pub-key-volume
     mountPath: /home/atlantis/.ssh
     readOnly: true
+  - name: terraformrc
+    mountPath: /home/atlantis/.terraformrc
+    subPath: .terraformrc                       # Важно, чтобы не перетереть всю папку /home/atlantis
+    readOnly: true
+
 EOF
 
 helm upgrade --install atlantis runatlantis/atlantis  --namespace atlantis  -f value.yaml
+
+#echo "Копируем в pod файл настройки .terraformrc"
+#kubectl -n atlantis cp /home/ubuntu/.terraformrc atlantis-0:/home/atlantis/.terraformrc

@@ -107,6 +107,10 @@ data "template_file" "cloudinit-bastion" {
     file_appsh                = filebase64("${abspath(path.module)}/conf/app/app.sh")
     file_secret_tmpl          = filebase64("${abspath(path.module)}/conf/app/mysqlsecret.yaml.tmpl")
     file_atlantis             = filebase64("${abspath(path.module)}/conf/atlantis/atlantis-install.sh")
+    file_yandex_auth          = filebase64(var.auth_key_sa_yandex)
+    file_auth_key_s3          = filebase64(var.auth_key_s3)
+    file_ssh_public_key       = filebase64(var.ssh_public_key)
+    file_terraformrc          = filebase64("${abspath(path.module)}/conf/terraform/.terraformrc")
   }
 }
 

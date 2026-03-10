@@ -1,13 +1,13 @@
 ##cloud vars
 variable "yc_cloud_id" {
   type        = string
-  default     = "b1gr160bk1vuruuer3om"
+  # default     = "b1gr160bk1vuruuer3om"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
 }
 
 variable "yc_folder_id" {
   type        = string
-  default     = "b1gdmpusv51ippn2psip"
+  # default     = "b1gdmpusv51ippn2psip"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
 }
 
@@ -19,22 +19,21 @@ variable "default-zone" {
 
 variable "auth_key_sa_yandex" {
   type        = string
-  default     = "~/keys/authorized-key-diplom.json"
+  # default     = "~/keys/authorized-key-diplom.json"
   description = "Имя файла с ключами для работы с ресурсами в yandex облаке"
+}
+
+variable "auth_key_s3" {
+  type        = string
+  # default     = "~/.aws/credentials-diplom"
+  description = "Имя файла с ключами для доступа к бакету s3"
 }
 
 variable "ssh_public_key" {
   type        = string
-  default     = "~/.ssh/id_rsa.pub"
+  # default     = "~/.ssh/id_rsa.pub"
   description = "Путь у файлу с открытым ключом для доступа к vm с локальной машины "
 }
-
-# variable "ydb_key" {
-#   type        = string
-#   default     = "credentials-diplom"
-#   description = "Имя файла с ключами для доступа к бакету s3"
-# }
-#
 
 
 # variable "name_location" {
@@ -130,61 +129,61 @@ variable "packages" {
 
 variable "db_host" {
   type            = string
-  default         = "test"
+  # default         = "test"
   description     = "Переменная с именем хоста базы данных"
 }
 
 variable "db_user" {
   type        = string
-  default     = "test"
+  # default     = "test"
   description = "Переменная с именем пользователя базы данных"
 }
 
 variable "db_password" {
   type        = string
-  default     = "test"
+  # default     = "test"
   description = "Переменная с паролем пользователя базы данных"
 }
 
 variable "db_name" {
   type        = string
-  default     = "test"
+  # default     = "test"
   description = "Переменная с именем базы данных"
 }
 
 variable "mysql_root_password" {
   type        = string
-  default     = "test"
+  # default     = "test"
   description = "Переменная с паролем пользователя root базы данных"
 }
 # atlantis
 variable "secret" {
   type        = string
-  default     = "test"
+  # default     = "test"
   description = "Секретная фраза для webhook github"
 }
 
 variable "token" {
   type        = string
-  default     = "ghp_test"
+  # default     = "ghp_test"
   description = "Переменная с токеном для доступа к github репозиторию"
 }
 
 variable "url" {
   type        = string
-  default     = "atlantis.kvlpro.site"
+  # default     = "atlantis.kvlpro.site"
   description = "Доменное имя сервиса atlantis"
 }
 
 variable "username" {
   type        = string
-  default     = "dreadsolnce"
+  # default     = "dreadsolnce"
   description = "Имя пользователя для доступа к github репозиторию"
 }
 
 variable "repo_github" {
   type        = string
-  default     = "dreadsolnce"
+  # default     = "dreadsolnce"
   description = "GitHub репозиторий"
 }
 ######################## переменные для мастер нод кластера ##############################################

@@ -84,6 +84,30 @@ write_files:
     encoding: b64
     content: ${file_atlantis}
 
+  # Файл yandex_auth
+  - path: /home/ubuntu/authorized-key-diplom.json
+    permissions: '0600'
+    encoding: b64
+    content: ${file_yandex_auth}
+
+  # Файл auth_key_s3
+  - path: /home/ubuntu/credentials-diplom
+    permissions: '0600'
+    encoding: b64
+    content: ${file_auth_key_s3}
+
+  # Файл ssh_public_key
+  - path: /home/ubuntu/id_rsa.pub
+    permissions: '0600'
+    encoding: b64
+    content: ${file_ssh_public_key}
+
+  # Файл terraformrc
+  - path: /home/ubuntu/.terraformrc
+    permissions: '0644'
+    encoding: b64
+    content: ${file_terraformrc}
+
 runcmd:
   - echo "Запуск cloud init"
   - echo "Изменяем владельца домашнего каталога пользователя UBUNTU "
