@@ -14,13 +14,6 @@ resource "yandex_vpc_subnet" "sunbets" {
   route_table_id  = each.key != "public" ? yandex_vpc_route_table.rt.id : null
 }
 
-resource "yandex_vpc_subnet" "my_subnet" {
-  name           = "test"
-  zone           = "ru-central1-a"
-  network_id     = yandex_vpc_network.vpc.id
-  v4_cidr_blocks = ["10.1.0.0/24"]
-}
-
 # Создание ключей ssh для доступа из bastion до vm
 resource "tls_private_key" "key" {
   algorithm = "RSA"
