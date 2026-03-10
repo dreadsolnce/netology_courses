@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 
 echo "Создание рандомной секретной строки для webhooks github"
 echo $RANDOM | md5sum | head -c 20; echo
@@ -8,10 +8,8 @@ echo "Добавьте вывод в переменную SECRET в файл atl
 echo "Параметры индивидуальные события для webhook"
 echo "Issue comments ... Pull requests ... Pull request reviews ... Pushes"
 
-echo "Подгружаем переменные из файла atlantis.var"
-#. atlantis.var
-
-echo $USERNAME
+echo "Проверяем что переменные подгрузились в скрипт"
+echo "Имя пользователя github: ${USERNAME}"
 
 echo "Добавляем репозиторий runatlantis"
 helm repo add runatlantis https://runatlantis.github.io/helm-charts
@@ -23,16 +21,12 @@ echo "Создаем рабочее пространство для atlantis с 
 kubectl create namespace atlantis --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Создаем секреты"
-kubectl -n atlantis delete secrets yandex-key-secret
-kubectl -n atlantis create secret generic yandex-key-secret --from-file=/home/ubuntu/authorized-key-diplom.json
-kubectl -n atlantis delete secrets s3-key-secret
-kubectl -n atlantis create secret generic s3-key-secret --from-file=/home/ubuntu/credentials-diplom
-kubectl -n atlantis delete secrets pub-key-secret
-kubectl -n atlantis create secret generic pub-key-secret --from-file=/home/ubuntu/id_rsa.pub
+kubectl -n atlantis create secret generic yandex-key-secret --from-file=/home/ubuntu/authorized-key-diplom.json --dry-run=client -o yaml | kubectl apply -f -
+kubectl -n atlantis create secret generic s3-key-secret --from-file=/home/ubuntu/credentials-diplom --dry-run=client -o yaml | kubectl apply -f -
+kubectl -n atlantis create secret generic pub-key-secret --from-file=/home/ubuntu/id_rsa.pub --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Создаем configMap с содержимым файла .terraformrc"
-kubectl -n atlantis delete configmap atlantis-terraformrc
-kubectl -n atlantis create configmap atlantis-terraformrc --from-file=.terraformrc=/home/ubuntu/.terraformrc
+kubectl -n atlantis create configmap atlantis-terraformrc --from-file=.terraformrc=/home/ubuntu/.terraformrc --dry-run=client -o yaml | kubectl apply -f -
 
 #echo "Секрет для токенов и ключей S3"
 #kubectl create secret generic atlantis-secrets \
@@ -65,11 +59,13 @@ volumeClaim:
     - ReadWriteOnce
 
 environment:
-  YC_CLOUD_ID: ${YC_CLOUD_ID}
-  YC_FOLDER_ID: ${YC_FOLDER_ID}
-
-#  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-#  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+  TF_VAR_yc_cloud_id: ${YC_CLOUD_ID}
+  TF_VAR_yc_folder_id: ${YC_FOLDER_ID}
+  TF_VAR_db_host: ${DB_HOST}
+  TF_VAR_db_user: ${DB_USER}
+  TF_VAR_db_password: ${DB_PASSWORD}
+  TF_VAR_db_name: ${DB_NAME}
+  TF_VAR_mysql_root_password: ${MYSQL_ROOT_PASSWORD}
 
 extraVolumes:
   - name: yandex-key-volume
