@@ -105,8 +105,8 @@ extraVolumeMounts:
     mountPath: /home/atlantis/.ssh
     readOnly: true
   - name: terraformrc
-    mountPath: /home/atlantis/.terraformrc
-    subPath: .terraformrc                       # Важно, чтобы не перетереть всю папку /home/atlantis
+    mountPath: /home/atlantis/
+#    subPath: .terraformrc                       # Важно, чтобы не перетереть всю папку /home/atlantis
     readOnly: true
 
 EOF
