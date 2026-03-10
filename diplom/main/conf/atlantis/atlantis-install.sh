@@ -24,6 +24,10 @@ echo "Создаем секреты"
 kubectl -n atlantis create secret generic yandex-key-secret --from-file=/home/ubuntu/authorized-key-diplom.json --dry-run=client -o yaml | kubectl apply -f -
 kubectl -n atlantis create secret generic s3-key-secret --from-file=/home/ubuntu/credentials-diplom --dry-run=client -o yaml | kubectl apply -f -
 kubectl -n atlantis create secret generic pub-key-secret --from-file=/home/ubuntu/id_rsa.pub --dry-run=client -o yaml | kubectl apply -f -
+kubectl -n atlantis create secret generic atlantis-vcs-secrets \
+   --from-literal=token="${TOKEN}" \
+   --from-literal=secret="${SECRET}" \
+   --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Создаем configMap с содержимым файла .terraformrc"
 kubectl -n atlantis create configmap atlantis-terraformrc --from-file=.terraformrc=/home/ubuntu/.terraformrc --dry-run=client -o yaml | kubectl apply -f -
@@ -40,8 +44,7 @@ orgAllowlist: ${REPO_ALLOWLIST}
 
 github:
   user: ${USERNAME}
-  token: ${TOKEN}
-  secret: ${SECRET}
+vcsSecretName: atlantis-vcs-secrets
 
 service:
   type: NodePort
