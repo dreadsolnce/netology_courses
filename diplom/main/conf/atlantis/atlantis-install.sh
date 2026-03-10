@@ -30,7 +30,7 @@ kubectl -n atlantis create secret generic pub-key-secret --from-file=/home/ubunt
 echo "Секрет для токена github и секрета (webhook) github"
 kubectl -n atlantis create secret generic atlantis-vcs-secrets \
    --from-literal=github_token="${TOKEN}" \
-   --from-literal=secret="${SECRET}" \
+   --from-literal=github_secret="${SECRET}" \
    --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Создаем configMap с содержимым файла .terraformrc"

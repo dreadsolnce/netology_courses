@@ -3,12 +3,14 @@ variable "yc_cloud_id" {
   type        = string
   # default     = "b1gr160bk1vuruuer3om"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
+  sensitive = true 
 }
 
 variable "yc_folder_id" {
   type        = string
   # default     = "b1gdmpusv51ippn2psip"
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
+  sensitive = true 
 }
 
 variable "default-zone" {
@@ -21,18 +23,21 @@ variable "auth_key_sa_yandex" {
   type        = string
   default     = "~/keys/authorized-key-diplom.json"
   description = "Имя файла с ключами для работы с ресурсами в yandex облаке"
+  sensitive = true 
 }
 
 variable "auth_key_s3" {
   type        = string
   default     = "~/.aws/credentials-diplom"
   description = "Имя файла с ключами для доступа к бакету s3"
+  sensitive = true  
 }
 
 variable "ssh_public_key" {
   type        = string
   default     = "~/.ssh/id_rsa.pub"
   description = "Путь у файлу с открытым ключом для доступа к vm с локальной машины "
+  sensitive = true 
 }
 
 
@@ -131,60 +136,70 @@ variable "db_host" {
   type            = string
   # default         = "test"
   description     = "Переменная с именем хоста базы данных"
+  sensitive = true 
 }
 
 variable "db_user" {
   type        = string
   # default     = "test"
   description = "Переменная с именем пользователя базы данных"
+  sensitive = true 
 }
 
 variable "db_password" {
   type        = string
   # default     = "test"
   description = "Переменная с паролем пользователя базы данных"
+  sensitive = true 
 }
 
 variable "db_name" {
   type        = string
   # default     = "test"
   description = "Переменная с именем базы данных"
+  sensitive = true 
 }
 
 variable "mysql_root_password" {
   type        = string
   # default     = "test"
   description = "Переменная с паролем пользователя root базы данных"
+  sensitive = true 
 }
 # atlantis
 variable "secret" {
   type        = string
   # default     = "test"
   description = "Секретная фраза для webhook github"
+  sensitive = true 
 }
 
 variable "token" {
   type        = string
   # default     = "ghp_test"
   description = "Переменная с токеном для доступа к github репозиторию"
+  sensitive = true 
 }
 
 variable "url" {
   type        = string
   # default     = "atlantis.kvlpro.site"
   description = "Доменное имя сервиса atlantis"
+  sensitive = true 
 }
 
 variable "username" {
   type        = string
   # default     = "dreadsolnce"
   description = "Имя пользователя для доступа к github репозиторию"
+  sensitive = true 
 }
 
 variable "repo_github" {
   type        = string
   # default     = "dreadsolnce"
   description = "GitHub репозиторий"
+  sensitive = true 
 }
 ######################## переменные для мастер нод кластера ##############################################
 variable "image" {
