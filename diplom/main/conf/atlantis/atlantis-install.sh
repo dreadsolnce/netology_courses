@@ -21,22 +21,20 @@ echo "Создаем рабочее пространство для atlantis с 
 kubectl create namespace atlantis --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Создаем секреты"
+echo "Секрет для ключа (файла) авторизации сервисного акаунта"
 kubectl -n atlantis create secret generic yandex-key-secret --from-file=/home/ubuntu/authorized-key-diplom.json --dry-run=client -o yaml | kubectl apply -f -
+echo "Секрет для ключа авторизации к s3 бакету"
 kubectl -n atlantis create secret generic s3-key-secret --from-file=/home/ubuntu/credentials-diplom --dry-run=client -o yaml | kubectl apply -f -
+echo "Секрет для публичного ключа"
 kubectl -n atlantis create secret generic pub-key-secret --from-file=/home/ubuntu/id_rsa.pub --dry-run=client -o yaml | kubectl apply -f -
+echo "Секрет для токена github и секрета (webhook) github"
 kubectl -n atlantis create secret generic atlantis-vcs-secrets \
-   --from-literal=token="${TOKEN}" \
+   --from-literal=github_token="${TOKEN}" \
    --from-literal=secret="${SECRET}" \
    --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Создаем configMap с содержимым файла .terraformrc"
 kubectl -n atlantis create configmap atlantis-terraformrc --from-file=.terraformrc=/home/ubuntu/.terraformrc --dry-run=client -o yaml | kubectl apply -f -
-
-#echo "Секрет для токенов и ключей S3"
-#kubectl create secret generic atlantis-secrets \
-#   --from-literal=ATLANTIS_GH_TOKEN="ghp_..." \
-#   --from-literal=AWS_ACCESS_KEY_ID="YCA..." \
-#   --from-literal=AWS_SECRET_ACCESS_KEY="YCP..."
 
 echo "Создаем файл value.yaml для atlantis со своими настройками"
 cat <<EOF > value.yaml
@@ -117,5 +115,3 @@ EOF
 
 helm upgrade --install atlantis runatlantis/atlantis  --namespace atlantis  -f value.yaml
 
-#echo "Копируем в pod файл настройки .terraformrc"
-#kubectl -n atlantis cp /home/ubuntu/.terraformrc atlantis-0:/home/atlantis/.terraformrc
