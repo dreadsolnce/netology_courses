@@ -10,5 +10,9 @@ helm upgrade --install yc-agent gitlab/gitlab-agent \
 
 # Также заменить строку в app.yml на __IMAGE__
 
+
+#curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | sudo bash
+# sudo apt install gitlab-runner -y
+# sudo gitlab-runner status
 #  gitlab-runner register --url https://gitlab.com --token glrt-6IXFrizF8ekcFT5D4NuPMm86MQpwOjFicTc1dQp0OjMKdTpoNHQzYxg.01.1j0qarn20
 # nohup gitlab-runner run >/dev/null 2>&1 &
