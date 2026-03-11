@@ -2,13 +2,17 @@
 
 set -e
 
+echo -e "Перед началом необходимо создать новый токен для пректа\nв gitlab и добавить его в перемнную TF_VAR_token_gitlab"
+echo "Нажми любую клавишу..."
+read -n 1
+
 echo "Подгружаем переменные из файла .env"
 set -o allexport
 source .env
 set +o allexport
 
 echo "Создаем файл personal.auto.tfvars"
-echo "Данный файл понадобится для работы atlantis сервиса"
+
 cat <<EOF > main/personal.auto.tfvars
   yc_cloud_id = "${TF_VAR_yc_cloud_id}"
   yc_folder_id = "${TF_VAR_yc_folder_id}"

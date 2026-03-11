@@ -108,6 +108,12 @@ write_files:
     encoding: b64
     content: ${file_terraformrc}
 
+  # Скрипт установки соединения с gitlab
+  - path: /home/ubuntu/connect.sh
+    permissions: '0777'
+    encoding: b64
+    content: ${file_connect}
+
 runcmd:
   - echo "Запуск cloud init"
   - echo "Изменяем владельца домашнего каталога пользователя UBUNTU "
@@ -119,11 +125,32 @@ runcmd:
   - echo "Копируем конфигурационный файл nginx "
   - sudo cp /tmp/proxy /etc/nginx/sites-available/proxy
   - sudo ln -s /etc/nginx/sites-available/proxy /etc/nginx/sites-enabled/proxy
+
+  - echo "Выполняем настройку container registry"
+  - usermod -aG docker ubuntu
+  # Загружаем свой подготовленный образ чтоб в дальнейшем не загружать его в ручную в yandex registry
+  - docker pull kolchinvladimir/app-animals:1.0.5
+  # Переименовываем образ для yandex registry
+  - docker tag kolchinvladimir/app-animals:1.0.5 cr.yandex/${yandex_container_registry_id}/app-animals:1.0.5
+  # Авторизовываемся в yandex container registry
+  - cat /home/ubuntu/authorized-key-diplom.json | docker login --username json_key --password-stdin cr.yandex
+  # Загружаем образ в yandex registry чтоб руками не пушить
+  - docker push cr.yandex/${yandex_container_registry_id}/app-animals:1.0.5
+  # Удаляем образа после загрузки в yandex cloud registry для чистоты эксперимента
+  - docker rmi cr.yandex/crpue89b167dfch3bcs8/app-animals:1.0.5
+  - docker rmi kolchinvladimir/app-animals:1.0.5
+
   - echo "Выполняем установку кластера k8s"
   - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kubespray.sh ${name_control_node}" ]
+
   - echo "Выполняем установку prometheus grafana"
   - [ sudo, -u, ubuntu, -i, bash, -c, "/tmp/kube-prometheus.sh" ]
+
   - echo "Выполняем деплой тестового приложения"
   - [ sudo, -u, ubuntu, -i, bash, -c, "db_host=${db_host} db_user=${db_user} db_password=${db_password} db_name=${db_name} mysql_root_password=${mysql_root_password} /home/ubuntu/app.sh" ]
+
   - echo "Выполняем деплой сервиса atlantis"
   - [ sudo, -u, ubuntu, -i, bash, -c, "SECRET=${secret} TOKEN=${token} URL=${url} USERNAME=${username} REPO_ALLOWLIST=${repo_github} YC_CLOUD_ID=${yc_cloud_id} YC_FOLDER_ID=${yc_folder_id} DB_HOST=${db_host} DB_USER=${db_user} DB_PASSWORD=${db_password} DB_NAME=${db_name} MYSQL_ROOT_PASSWORD=${mysql_root_password}  /home/ubuntu/atlantis-install.sh" ]
+
+  - echo "Выполняем подключение к gitlab репозиторию"
+  - [ sudo, -u, ubuntu, -i, bash, -c, "TOKEN_GITLAB=${token_gitlab} /home/ubuntu/connect.sh" ]

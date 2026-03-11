@@ -128,7 +128,7 @@ variable "settings_bastion" {
 #####################Переменные cloud-init##################################
 variable "packages" {
     type        = list(string)
-    default     = [ "htop", "tmux", "net-tools", "mc", "vim", "nginx", "ansible", "git", "python3-venv", "libssl-dev", "liblzma-dev", "python3-tk", "libsqlite3-dev", "libreadline-dev", "libffi-dev", "libncurses5-dev", "libncursesw5-dev", "libbz2-dev", "build-essential", "gcc", "python3-pip" ] #, "mysql-client" ]
+    default     = [ "htop", "tmux", "net-tools", "mc", "vim", "nginx", "ansible", "git", "python3-venv", "libssl-dev", "liblzma-dev", "python3-tk", "libsqlite3-dev", "libreadline-dev", "libffi-dev", "libncurses5-dev", "libncursesw5-dev", "libbz2-dev", "build-essential", "gcc", "python3-pip", "docker.io", "mysql-client" ]
     description = "Устанавливаемые пакеты по умолчанию"
 }
 
@@ -201,6 +201,13 @@ variable "repo_github" {
   description = "GitHub репозиторий"
   sensitive = true 
 }
+
+variable "token_gitlab" {
+  type          = string
+  description   = "Токен для подключения к репозиторию с приложением в gitlab"
+  sensitive     = true
+}
+
 ######################## переменные для мастер нод кластера ##############################################
 variable "image" {
   type            = string
@@ -225,8 +232,8 @@ variable "resources_master_nodes" {
     }
   )
   default = {
-    cores             = 2
-    memory            = 4
+    cores             = 4
+    memory            = 8
     core_fraction     = 100
     disk_size         = 15
     type_disk         = "network-hdd"
@@ -258,4 +265,22 @@ variable "settings_master_node" {
       ipaddress   = "192.168.3.33"
     }
   }
+}
+
+#---------------Переменные для Container Registry----------------------------------------
+variable "registry" {
+  type = string
+  default = "registry-diplom"
+  description = "Название registry где располагаются мои образа"
+}
+
+variable "gitlab-sa" {
+  type = string
+  default = "gitlab-sa"
+  description = "имя сервисного аккаунта"
+}
+
+variable "roles" {
+  type    = list(string)
+  default = ["container-registry.images.pusher", "k8s.clusters.agent"]
 }

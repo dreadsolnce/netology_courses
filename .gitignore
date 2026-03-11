@@ -12,7 +12,6 @@
 personal.auto.tfvars
 *.personal.auto.tfvars
 
-
 .idea
 *.env
 *vargant

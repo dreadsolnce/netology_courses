@@ -90,6 +90,9 @@ data "template_file" "cloudinit-bastion" {
     yc_cloud_id               = var.yc_cloud_id
     yc_folder_id              = var.yc_folder_id
 
+    yandex_container_registry_id = yandex_container_registry.registry.id
+    token_gitlab              = var.token_gitlab
+
     name_control_node         = local.sorted_list_master_node[0].name
     file_content              = templatefile("${path.module}/proxy.tftpl", {
         master-node           = local.sorted_list_master_node
@@ -111,6 +114,7 @@ data "template_file" "cloudinit-bastion" {
     file_auth_key_s3          = filebase64(var.auth_key_s3)
     file_ssh_public_key       = filebase64(var.ssh_public_key)
     file_terraformrc          = filebase64("${abspath(path.module)}/conf/terraform/.terraformrc")
+    file_connect              = filebase64("${abspath(path.module)}/conf/gitlab/connect.sh")
   }
 }
 
