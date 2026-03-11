@@ -20,5 +20,8 @@ sudo gitlab-runner register --executor shell --url https://gitlab.com --token ${
 nohup gitlab-runner run >/dev/null 2>&1 &
 echo "Не забудь создать на сайте gitlab раннера если не создал"
 
+echo "Добавляем пользователя gitlab-runner в группу docker"
+sudo usermod -aG docker gitlab-runner
+
 echo "Изменяем файл app.yml для работы с gitlab после того как он задеплоился с образом по умолчанию kolchin>
 sed -i "s|kolchinvladimir/app-animals:1.0.5|__IMAGE__|g" /home/ubuntu/app.yml
