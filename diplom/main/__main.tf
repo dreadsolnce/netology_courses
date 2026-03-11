@@ -91,7 +91,8 @@ data "template_file" "cloudinit-bastion" {
     yc_folder_id              = var.yc_folder_id
 
     yandex_container_registry_id = yandex_container_registry.registry.id
-    token_gitlab              = var.token_gitlab
+    token_gitlab_agent        = var.token_gitlab_agent
+    token_gitlab_runner       = var.token_gitlab_runner
 
     name_control_node         = local.sorted_list_master_node[0].name
     file_content              = templatefile("${path.module}/proxy.tftpl", {

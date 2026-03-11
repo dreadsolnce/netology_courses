@@ -153,4 +153,4 @@ runcmd:
   - [ sudo, -u, ubuntu, -i, bash, -c, "SECRET=${secret} TOKEN=${token} URL=${url} USERNAME=${username} REPO_ALLOWLIST=${repo_github} YC_CLOUD_ID=${yc_cloud_id} YC_FOLDER_ID=${yc_folder_id} DB_HOST=${db_host} DB_USER=${db_user} DB_PASSWORD=${db_password} DB_NAME=${db_name} MYSQL_ROOT_PASSWORD=${mysql_root_password}  /home/ubuntu/atlantis-install.sh" ]
 
   - echo "Выполняем подключение к gitlab репозиторию"
-  - [ sudo, -u, ubuntu, -i, bash, -c, "TOKEN_GITLAB=${token_gitlab} /home/ubuntu/connect.sh" ]
+  - [ sudo, -u, ubuntu, -i, bash, -c, "TOKEN_GITLAB_AGENT=${token_gitlab_agent} TOKEN_GITLAB_RUNNER=${token_gitlab_runner} /home/ubuntu/connect.sh" ]

@@ -202,9 +202,15 @@ variable "repo_github" {
   sensitive = true 
 }
 
-variable "token_gitlab" {
+variable "token_gitlab_agent" {
   type          = string
-  description   = "Токен для подключения к репозиторию с приложением в gitlab"
+  description   = "Токен для связи gitlab и kluster"
+  sensitive     = true
+}
+
+variable "token_gitlab_runner" {
+  type          = string
+  description   = "Токен для связи с gitlab runner"
   sensitive     = true
 }
 
