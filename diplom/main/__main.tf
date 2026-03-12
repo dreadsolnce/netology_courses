@@ -14,7 +14,7 @@ resource "yandex_vpc_subnet" "sunbets" {
   route_table_id  = each.key != "public" ? yandex_vpc_route_table.rt.id : null
 }
 
-# 3. Создание подсети
+# 3. Создание подсети test
 resource "yandex_vpc_subnet" "test" {
   name           = "test"
   v4_cidr_blocks = ["10.0.0.0/24"] # Диапазон адресов [1]
