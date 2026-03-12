@@ -12,6 +12,8 @@
 personal.auto.tfvars
 *.personal.auto.tfvars
 
+*.privkey.pem
+
 .idea
 *.env
 *vargant
