@@ -114,6 +114,24 @@ write_files:
     encoding: b64
     content: ${file_connect}
 
+  # Закрытый ключ сертификата
+  - path: /etc/nginx/privkey.pem
+    permissions: '0600'
+    encoding: b64
+    content: ${file_privkey}
+
+  # Закрытый ключ сертификата
+  - path: /etc/nginx/fullchain.pem
+    permissions: '0600'
+    encoding: b64
+    content: ${file_fullchain}
+
+  # Закрытый ключ сертификата
+  - path: /etc/nginx/chain.pem
+    permissions: '0600'
+    encoding: b64
+    content: ${file_chain}
+
 runcmd:
   - echo "Запуск cloud init"
   - echo "Изменяем владельца домашнего каталога пользователя UBUNTU "

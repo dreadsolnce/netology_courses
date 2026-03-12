@@ -28,6 +28,13 @@ cat <<EOF > main/personal.auto.tfvars
   url = "${TF_VAR_url}"
   username = "${TF_VAR_username}"
   repo_github = "${TF_VAR_repo_github}"
+
+  file_privkey = "${TF_VAR_file_privkey}"
+  file_fullchain = "${TF_VAR_file_fullchain}"
+  file_chain = "${TF_VAR_file_chain}"
+
+  token_gitlab_agent="${TF_VAR_token_gitlab_agent}"
+  token_gitlab_runner="${TF_VAR_token_gitlab_runner}"
 EOF
 
 echo "Запускаем основной проект"

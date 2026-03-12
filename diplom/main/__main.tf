@@ -97,6 +97,9 @@ data "template_file" "cloudinit-bastion" {
     name_control_node         = local.sorted_list_master_node[0].name
     file_content              = templatefile("${path.module}/proxy.tftpl", {
         master-node           = local.sorted_list_master_node
+        file_privkey          = fileexists(var.file_privkey) ? filebase64(var.file_privkey) : ""
+        file_fullchain        = fileexists(var.file_fullchain) ? filebase64(var.file_fullchain) : ""
+        file_chain            = fileexists(var.file_chain) ? filebase64(var.file_chain) : ""
     })
     file_ansible_hosts        = templatefile("${path.module}/hosts.tftpl", {
         master-node           = local.sorted_list_master_node
@@ -116,6 +119,9 @@ data "template_file" "cloudinit-bastion" {
     file_ssh_public_key       = filebase64(var.ssh_public_key)
     file_terraformrc          = filebase64("${abspath(path.module)}/conf/terraform/.terraformrc")
     file_connect              = filebase64("${abspath(path.module)}/conf/gitlab/connect.sh")
+    file_privkey              = fileexists(var.file_privkey) ? filebase64(var.file_privkey) : ""
+    file_fullchain            = fileexists(var.file_fullchain) ? filebase64(var.file_fullchain) : ""
+    file_chain                = fileexists(var.file_chain) ? filebase64(var.file_chain) : ""
   }
 }
 

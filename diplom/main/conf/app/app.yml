@@ -83,6 +83,8 @@ spec:
               secretKeyRef:
                 name: mysqlsecret
                 key: DB_NAME
+      imagePullSecrets:
+        - name: yc-registry-secret
 ---
 apiVersion: apps/v1
 kind: Deployment

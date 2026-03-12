@@ -30,4 +30,6 @@ spec:
             value: "mysql"
           - name: DB_NAME
             value: "mysql"
+      imagePullSecrets:
+        - name: yc-registry-secret
 
