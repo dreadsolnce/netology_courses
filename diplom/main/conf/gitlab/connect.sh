@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Устанавливаем gitlab agent для связки GitLab и Kubernetes"
 helm repo add gitlab https://charts.gitlab.io
 helm repo update
