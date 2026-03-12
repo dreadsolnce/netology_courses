@@ -72,6 +72,11 @@ environment:
   TF_VAR_url: ${URL}
   TF_VAR_username: ${USERNAME}
   TF_VAR_repo_github: ${REPO_ALLOWLIST}
+  TF_VAR_file_privkey: ${FILE_PRIVKEY}
+  TF_VAR_file_fullchain: ${FILE_FULLCHAIN}
+  TF_VAR_file_chain: ${FILE_CHAIN}
+  TF_VAR_token_gitlab_agent: ${TOKEN_GITLAB_AGENT}
+  TF_VAR_token_gitlab_runner: ${TOKEN_GITLAB_RUNNER}
 
 extraVolumes:
   - name: yandex-key-volume
