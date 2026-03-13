@@ -43,6 +43,7 @@ kubectl -n atlantis create secret generic atlantis-secrets-env \
   --from-literal=TF_VAR_mysql_root_password="${MYSQL_ROOT_PASSWORD}" \
   --from-literal=TF_VAR_token_gitlab_agent="${TOKEN_GITLAB_AGENT}" \
   --from-literal=TF_VAR_token_gitlab_runner="${TOKEN_GITLAB_RUNNER}" \
+  --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Создаем configMap с содержимым файла .terraformrc"
 kubectl -n atlantis create configmap atlantis-terraformrc --from-file=.terraformrc=/home/ubuntu/.terraformrc --dry-run=client -o yaml | kubectl apply -f -
