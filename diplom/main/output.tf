@@ -29,11 +29,11 @@ output "Абсолютный_путь" {
   }
 }
 
-output "Основные_скрипты_запуска" {
-  value = {
-    file_kubespray      = "${abspath(path.module)}/conf/kubespray/kubespray.sh"
-    file_prometheus     = "${abspath(path.module)}/conf/grafana/kube-prometheus.sh"
-    file_app            = "${abspath(path.module)}/conf/app/app.sh"
-  }
-}
+# output "Основные_скрипты_запуска" {
+#   value = {
+#     file_kubespray      = "${abspath(path.module)}/conf/kubespray/kubespray.sh"
+#     file_prometheus     = "${abspath(path.module)}/conf/grafana/kube-prometheus.sh"
+#     file_app            = "${abspath(path.module)}/conf/app/app.sh"
+#   }
+# }
 
