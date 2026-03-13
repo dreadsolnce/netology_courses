@@ -7,3 +7,6 @@ projects:
         - "*.tf" 
         - "!providers.tf" # Запускать plan автоматически при изменении tf-файлов
       enabled: true
+    env:
+      vars:
+        - TF_VAR_token
