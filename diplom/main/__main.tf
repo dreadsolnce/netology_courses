@@ -127,7 +127,7 @@ data "template_file" "cloudinit-bastion" {
     file_ssh_public_key       = filebase64(var.ssh_public_key)
     file_terraformrc          = filebase64("${abspath(path.module)}/conf/terraform/.terraformrc")
     file_connect              = filebase64("${abspath(path.module)}/conf/gitlab/connect.sh")
-    file_privkey              = var.file_privkey)
+    file_privkey              = var.file_privkey
     file_fullchain            = var.file_fullchain
     file_chain                = var.file_chain
   }

@@ -32,6 +32,17 @@ kubectl -n atlantis create secret generic atlantis-vcs-secrets \
    --from-literal=github_token="${TOKEN}" \
    --from-literal=github_secret="${SECRET}" \
    --dry-run=client -o yaml | kubectl apply -f -
+echo "Секрет для перемнных окружения TF_VAR"
+kubectl -n atlantis create secret generic atlantis-secrets-env \
+  --from-literal=TF_VAR_token="${TOKEN}" \
+  --from-literal=TF_VAR_secret="${SECRET}" \
+  --from-literal=TF_VAR_db_host="${DB_HOST}" \
+  --from-literal=TF_VAR_db_user="${DB_USER}" \
+  --from-literal=TF_VAR_db_password="${DB_PASSWORD}" \
+  --from-literal=TF_VAR_db_name="${DB_NAME}" \
+  --from-literal=TF_VAR_db_mysql_root_password="${MYSQL_ROOT_PASSWORD}" \
+  --from-literal=TF_VAR_db_token_gitlab_agent="${TOKEN_GITLAB_AGENT}" \
+  --from-literal=TF_VAR_db_token_gitlab_runner="${TOKEN_GITLAB_RUNNER}" \
 
 echo "Создаем configMap с содержимым файла .terraformrc"
 kubectl -n atlantis create configmap atlantis-terraformrc --from-file=.terraformrc=/home/ubuntu/.terraformrc --dry-run=client -o yaml | kubectl apply -f -
@@ -58,25 +69,54 @@ volumeClaim:
   storageClassName: "local-path"
   accessModes:
     - ReadWriteOnce
+environmentSecrets:
+  - name: TF_VAR_token
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_token
+  - name: TF_VAR_secret
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_secret
+  - name: TF_VAR_db_host
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_db_host
+  - name: TF_VAR_db_user
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_db_user
+  - name: TF_VAR_db_password
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_db_password
+  - name: TF_VAR_db_name
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_db_name
+  - name: TF_VAR_db_mysql_root_password
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_db_mysql_root_password
+  - name: TF_VAR_db_token_gitlab_agent
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_db_token_gitlab_agent
+  - name: TF_VAR_db_token_gitlab_runner
+    secretKeyRef:
+      name: atlantis-secrets-env
+      key: TF_VAR_db_token_gitlab_runner
 
 environment:
   TF_VAR_yc_cloud_id: ${YC_CLOUD_ID}
   TF_VAR_yc_folder_id: ${YC_FOLDER_ID}
-  TF_VAR_db_host: ${DB_HOST}
-  TF_VAR_db_user: ${DB_USER}
-  TF_VAR_db_password: ${DB_PASSWORD}
-  TF_VAR_db_name: ${DB_NAME}
-  TF_VAR_mysql_root_password: ${MYSQL_ROOT_PASSWORD}
-  TF_VAR_secret: ${SECRET}
-  TF_VAR_token: ${TOKEN}
   TF_VAR_url: ${URL}
   TF_VAR_username: ${USERNAME}
   TF_VAR_repo_github: ${REPO_ALLOWLIST}
   TF_VAR_file_privkey: ${FILE_PRIVKEY}
   TF_VAR_file_fullchain: ${FILE_FULLCHAIN}
   TF_VAR_file_chain: ${FILE_CHAIN}
-  TF_VAR_token_gitlab_agent: ${TOKEN_GITLAB_AGENT}
-  TF_VAR_token_gitlab_runner: ${TOKEN_GITLAB_RUNNER}
+
 
 extraVolumes:
   - name: yandex-key-volume
