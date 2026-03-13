@@ -82,8 +82,8 @@ data "template_file" "cloudinit-bastion" {
     db_name                   = var.db_name
     mysql_root_password       = var.mysql_root_password
 
-    secret                    = var.secret
-    token                     = var.token
+    secret                    = sensitive(var.secret)
+    token                     = sensitive(var.token)
     url                       = var.url
     username                  = var.username
     repo_github               = var.repo_github
