@@ -58,7 +58,7 @@ resource "yandex_compute_instance" "bastion" {
   metadata = {
     serial-port-enable  = 1
     ssh-keys            = "ubuntu:${file(var.ssh_public_key)}"            # Через файл открытого ключа pub на локальной машине
-    user-data           = data.template_file.cloudinit-bastion.rendered   # Установка дополнительного ПО
+    user-data           = sensitive(data.template_file.cloudinit-bastion.rendered)   # Установка дополнительного ПО
   }
   # Создается только после того как создадутся мастер ноды
   depends_on = [
