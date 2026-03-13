@@ -217,19 +217,19 @@ variable "token_gitlab_runner" {
 variable "file_privkey" {
   type = string
   description = "Файл закрытого ключа для ssl nginx"
-  sensitive = false
+  # sensitive = false
 }
 
 variable "file_fullchain" {
   type = string
   description = "Файл сертификата вместе с цепочкой доверия для ssl nginx"
-  sensitive = false
+  # sensitive = false
 }
 
 variable "file_chain" {
   type = string
   description = "Файл сертификата посредника (удостоверяющего центра) для ssl nginx"
-  sensitive = false
+  # sensitive = false
 }
 
 ######################## переменные для мастер нод кластера ##############################################
