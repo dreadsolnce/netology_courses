@@ -14,26 +14,10 @@ output "Общая_информация_по_bastion" {
   }
 }
 
-output "Переменные_сертификатов" {
-  value = {
-    private   = var.file_privkey
-    chain     = var.file_chain
-    fullchain = var.file_fullchain
-  }
-}
-
 output "Абсолютный_путь" {
   value = {
     path    = path.module
     abspath = abspath(path.module)
   }
 }
-
-# output "Основные_скрипты_запуска" {
-#   value = {
-#     file_kubespray      = "${abspath(path.module)}/conf/kubespray/kubespray.sh"
-#     file_prometheus     = "${abspath(path.module)}/conf/grafana/kube-prometheus.sh"
-#     file_app            = "${abspath(path.module)}/conf/app/app.sh"
-#   }
-# }
 
