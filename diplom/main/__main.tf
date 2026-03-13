@@ -18,7 +18,7 @@ resource "yandex_vpc_subnet" "sunbets" {
 resource "yandex_vpc_subnet" "my_subnet" {
   name           = "my-subnet"
   zone           = "ru-central1-a"
-  network_id     = yandex_vpc_network.my_network.id
+  network_id     = yandex_vpc_network.vpc.id
   v4_cidr_blocks = ["192.168.10.0/24"]
 }
 
