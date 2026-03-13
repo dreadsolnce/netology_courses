@@ -15,12 +15,12 @@ resource "yandex_vpc_subnet" "sunbets" {
 }
 
 # 3. Создание подсети test
-resource "yandex_vpc_subnet" "test" {
-  name           = "test"
-  v4_cidr_blocks = ["10.0.0.0/24"] # Диапазон адресов [1]
-  zone           = "ru-central1-a"
-  network_id     = yandex_vpc_network.vpc.id # Привязка к сети [1]
-}
+#resource "yandex_vpc_subnet" "test" {
+#  name           = "test"
+#  v4_cidr_blocks = ["10.0.0.0/24"] # Диапазон адресов [1]
+#  zone           = "ru-central1-a"
+#  network_id     = yandex_vpc_network.vpc.id # Привязка к сети [1]
+#}
 
 # Создание ключей ssh для доступа из bastion до vm
 resource "tls_private_key" "key" {
@@ -127,7 +127,7 @@ data "template_file" "cloudinit-bastion" {
     file_ssh_public_key       = filebase64(var.ssh_public_key)
     file_terraformrc          = filebase64("${abspath(path.module)}/conf/terraform/.terraformrc")
     file_connect              = filebase64("${abspath(path.module)}/conf/gitlab/connect.sh")
-    file_privkey              = var.file_privkey)
+    file_privkey              = var.file_privkey
     file_fullchain            = var.file_fullchain
     file_chain                = var.file_chain
   }
