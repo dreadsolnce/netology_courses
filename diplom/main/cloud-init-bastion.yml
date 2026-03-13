@@ -118,19 +118,19 @@ write_files:
   - path: /etc/nginx/privkey.pem
     permissions: '0600'
     encoding: b64
-    content: ${file_privkey_p}
+    content: ${file_privkey}
 
   # Закрытый ключ сертификата
   - path: /etc/nginx/fullchain.pem
     permissions: '0600'
     encoding: b64
-    content: ${file_fullchain_p}
+    content: ${file_fullchain}
 
   # Закрытый ключ сертификата
   - path: /etc/nginx/chain.pem
     permissions: '0600'
     encoding: b64
-    content: ${file_chain_p}
+    content: ${file_chain}
 
 runcmd:
   - echo "Запуск cloud init"

@@ -14,6 +14,14 @@ output "Общая_информация_по_bastion" {
   }
 }
 
+output "Переменные_сертификатов" {
+  value = {
+    private   = var.file_privkey
+    chain     = var.file_chain
+    fullchain = var.file_fullchain
+  }
+}
+
 output "Абсолютный_путь" {
   value = {
     path    = path.module
@@ -28,3 +36,4 @@ output "Основные_скрипты_запуска" {
     file_app            = "${abspath(path.module)}/conf/app/app.sh"
   }
 }
+
