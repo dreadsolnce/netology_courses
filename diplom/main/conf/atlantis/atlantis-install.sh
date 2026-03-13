@@ -94,18 +94,18 @@ environmentSecrets:
     secretKeyRef:
       name: atlantis-secrets-env
       key: TF_VAR_db_name
-  - name: TF_VAR_db_mysql_root_password
+  - name: TF_VAR_mysql_root_password
     secretKeyRef:
       name: atlantis-secrets-env
-      key: TF_VAR_db_mysql_root_password
-  - name: TF_VAR_db_token_gitlab_agent
+      key: TF_VAR_mysql_root_password
+  - name: TF_VAR_token_gitlab_agent
     secretKeyRef:
       name: atlantis-secrets-env
-      key: TF_VAR_db_token_gitlab_agent
-  - name: TF_VAR_db_token_gitlab_runner
+      key: TF_VAR_token_gitlab_agent
+  - name: TF_VAR_token_gitlab_runner
     secretKeyRef:
       name: atlantis-secrets-env
-      key: TF_VAR_db_token_gitlab_runner
+      key: TF_VAR_token_gitlab_runner
 
 environment:
   TF_VAR_yc_cloud_id: ${YC_CLOUD_ID}
